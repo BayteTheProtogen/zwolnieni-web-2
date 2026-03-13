@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberBez - Naucz się Cyberbezpieczeństwa!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: #fff;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #fff;
+            border-bottom: 2px solid #e5e5e5;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .streak-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ff9600;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .streak-fire {
+            font-size: 24px;
+            animation: firePulse 1s ease-in-out infinite;
+        }
+
+        @keyframes firePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .xp-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #7ab729;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .xp-star {
+            font-size: 24px;
+            animation: starSpin 3s ease-in-out infinite;
+        }
+
+        @keyframes starSpin {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(10deg) scale(1.1); }
+            75% { transform: rotate(-10deg) scale(1.1); }
+        }
+
+        /* Screens */
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100vh;
+            padding: 20px;
+            padding-top: 80px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transform: scale(0.9);
+        }
+
+        .screen.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        .screen.exit {
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.8) translateY(-50px);
+        }
+
+        /* Home Screen */
+        .welcome-title {
+            text-align: center;
+            color: #3c3c3c;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .welcome-subtitle {
+            text-align: center;
+            color: #777;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        /* Mascot */
+        .mascot-container {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .mascot {
+            font-size: 80px;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: mascotBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes mascotBounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(5deg); }
+            75% { transform: translateY(-10px) rotate(-5deg); }
+        }
+
+        .mascot:hover {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        .mascot.happy { animation: mascotHappy 0.5s ease; }
+        .mascot.surprised { animation: mascotSurprised 0.5s ease; }
+        .mascot.thinking { animation: mascotThinking 1s ease; }
+        .mascot.celebrating { animation: mascotCelebrating 1s ease; }
+
+        @keyframes mascotHappy {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        @keyframes mascotSurprised {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2) translateY(-5px); }
+        }
+
+        @keyframes mascotThinking {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+
+        @keyframes mascotCelebrating {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.3) rotate(-20deg); }
+            75% { transform: scale(1.3) rotate(20deg); }
+        }
+
+        .speech-bubble {
+            background: #fff;
+            border: 2px solid #667eea;
+            border-radius: 20px;
+            padding: 15px 20px;
+            margin: 10px auto;
+            max-width: 300px;
+            position: relative;
+            font-size: 16px;
+            color: #3c3c3c;
+            animation: bubblePop 0.3s ease;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid #667eea;
+        }
+
+        @keyframes bubblePop {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Lesson Cards */
+        .lesson-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .lesson-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lesson-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255,255,255,0.1);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+        }
+
+        .lesson-card:hover::before {
+            left: 100%;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .lesson-card.locked {
+            background: #e5e5e5;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .lesson-card.locked:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .lesson-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .lesson-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .lesson-desc {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .lesson-progress {
+            margin-top: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .lesson-progress-bar {
+            height: 100%;
+            background: #7ab729;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        /* Quiz Screen */
+        .question-container {
+            background: #f7f7f7;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 20px;
+            color: #3c3c3c;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: #fff;
+            border: 2px solid #e5e5e5;
+            border-radius: 15px;
+            padding: 15px 20px;
+            font-size: 16px;
+            color: #3c3c3c;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: rgba(102, 126, 234, 0.1);
+            transition: width 0.3s ease;
+        }
+
+        .option-btn:hover::before {
+            width: 100%;
+        }
+
+        .option-btn:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .option-btn.selected {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .option-btn.correct {
+            border-color: #7ab729;
+            background: rgba(122, 183, 41, 0.2);
+            animation: correctPulse 0.5s ease;
+        }
+
+        .option-btn.wrong {
+            border-color: #ff4b4b;
+            background: rgba(255, 75, 75, 0.2);
+            animation: wrongShake 0.5s ease;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes wrongShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Action Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, #7ab729 0%, #5fa31a 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(122, 183, 41, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(122, 183, 41, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            background: #e5e5e5;
+            color: #999;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #fff;
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: #e5e5e5;
+            border-radius: 10px;
+            height: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #7ab729 0%, #5fa31a 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: progressShine 2s infinite;
+        }
+
+        @keyframes progressShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Feedback */
+        .feedback-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: #fff;
+            border-top: 2px solid #e5e5e5;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            z-index: 200;
+        }
+
+        .feedback-container.show {
+            transform: translateY(0);
+        }
+
+        .feedback-container.correct {
+            background: rgba(122, 183, 41, 0.1);
+            border-top-color: #7ab729;
+        }
+
+        .feedback-container.wrong {
+            background: rgba(255, 75, 75, 0.1);
+            border-top-color: #ff4b4b;
+        }
+
+        .feedback-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .feedback-correct {
+            color: #7ab729;
+        }
+
+        .feedback-wrong {
+            color: #ff4b4b;
+        }
+
+        .feedback-text {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        /* Results Screen */
+        .results-container {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .results-icon {
+            font-size: 100px;
+            margin-bottom: 20px;
+            animation: resultsBounce 1s ease;
+        }
+
+        @keyframes resultsBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .results-title {
+            font-size: 28px;
+            color: #3c3c3c;
+            margin-bottom: 10px;
+        }
+
+        .results-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #7ab729;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #777;
+            margin-top: 5px;
+        }
+
+        .xp-gain {
+            background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            color: white;
+            animation: xpPop 0.5s ease;
+        }
+
+        @keyframes xpPop {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .xp-gain-value {
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        .xp-gain-label {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #ffd700;
+            animation: confettiFall 3s ease-out forwards;
+            z-index: 1000;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Floating elements */
+        .float-xp {
+            position: absolute;
+            color: #7ab729;
+            font-weight: bold;
+            font-size: 20px;
+            animation: floatUp 1s ease-out forwards;
+            pointer-events: none;
+            z-index: 300;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .app-container {
+                margin: 0;
+            }
+
+            .welcome-title {
+                font-size: 24px;
+            }
+
+            .mascot {
+                font-size: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header" id="header">
+            <div class="streak-container">
+                <span class="streak-fire">🔥</span>
+                <span id="streak-count">0</span>
+            </div>
+            <div class="xp-container">
+                <span class="xp-star">⭐</span>
+                <span id="xp-count">0</span>
+            </div>
+        </div>
+
+        <!-- Home Screen -->
+        <div class="screen active" id="home-screen">
+            <h1 class="welcome-title">Witaj w CyberBez! 🛡️</h1>
+            <p class="welcome-subtitle">Naucz się jak chronić siebie w internecie</p>
+
+            <div class="mascot-container">
+                <div class="mascot" id="home-mascot">\( ^_^ )/</div>
+                <div class="speech-bubble" id="home-speech">
+                    Cześć! Pomogę Ci nauczyć się bezpieczeństwa w internecie!
+                </div>
+            </div>
+
+            <div class="lesson-list" id="lesson-list">
+                <!-- Lessons will be dynamically inserted -->
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div class="screen" id="quiz-screen">
+            <div class="progress-container">
+                <div class="progress-bar" id="quiz-progress" style="width: 0%"></div>
+            </div>
+
+            <div class="mascot-container">
+                <div class="mascot" id="quiz-mascot">٩(◕‿◕｡)۶</div>
+            </div>
+
+            <div class="question-container">
+                <div class="question-text" id="question-text"></div>
+                <div class="options-container" id="options-container"></div>
+            </div>
+
+            <button class="btn-primary" id="check-answer-btn" disabled>Sprawdź</button>
+        </div>
+
+        <!-- Feedback Container -->
+        <div class="feedback-container" id="feedback-container">
+            <div class="feedback-title" id="feedback-title"></div>
+            <div class="feedback-text" id="feedback-text"></div>
+            <button class="btn-primary" id="continue-btn">Dalej</button>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="screen" id="results-screen">
+            <div class="results-container">
+                <div class="results-icon" id="results-icon">🎉</div>
+                <h2 class="results-title" id="results-title">Lekcja ukończona!</h2>
+
+                <div class="xp-gain">
+                    <div class="xp-gain-value" id="xp-gained">+50 XP</div>
+                    <div class="xp-gain-label">Zdobyte doświadczenie</div>
+                </div>
+
+                <div class="results-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="correct-count">0</div>
+                        <div class="stat-label">Poprawnych</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="total-count">0</div>
+                        <div class="stat-label">Pytań</div>
+                    </div>
+                </div>
+
+                <button class="btn-primary" id="back-home-btn">Wróć do menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        const gameState = {
+            xp: 0,
+            streak: 0,
+            lastLogin: null,
+            currentLesson: null,
+            currentQuestion: 0,
+            score: 0,
+            selectedOption: null
+        };
+
+        // Lessons Data
+        const lessons = [
+            {
+                id: 1,
+                title: "Phishing - Jak rozpoznać oszustwo?",
+                description: "Naucz się rozpoznawać fałszywe emaile i wiadomości",
+                icon: "🎣",
+                color: "#667eea",
+                questions: [
+                    {
+                        question: "Otrzymałeś email od 'banku' z prośbą o podanie hasła. Co robisz?",
+                        options: [
+                            "Podaję dane, bo to mój bank",
+                            "Ignoruję i usuwam wiadomość",
+                            "Oddzwaniałem na numer z emaila",
+                            "Klikam w link żeby sprawdzić"
+                        ],
+                        correct: 1,
+                        explanation: "Bank nigdy nie poprosi o hasło przez email! To klasyczny phishing."
+                    },
+                    {
+                        question: "Jak rozpoznać fałszywy email?",
+                        options: [
+                            "Ma błędy językowe i dziwny nadawca",
+                            "Jest napisany po polsku",
+                            "Ma logo banku",
+                            "Przyszedł rano"
+                        ],
+                        correct: 0,
+                        explanation: "Błędy językowe, dziwny adres nadawcy i presja czasu to typowe cechy phishingu!"
+                    },
+                    {
+                        question: "Dostałeś SMS 'Wygrałeś iPhone'a! Kliknij tutaj'. Twoja reakcja?",
+                        options: [
+                            "Klikam szybko!",
+                            "Sprawdzam kto wysłał",
+                            "Usuwam bez klikania",
+                            "Wysyłam dalej do znajomych"
+                        ],
+                        correct: 2,
+                        explanation: "Nigdy nie klikaj w linki z nieznanych źródeł! To próba wyłudzenia danych."
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Silne Hasła",
+                description: "Stwórz hasło, którego hakerzy nie złamią",
+                icon: "🔐",
+                color: "#764ba2",
+                questions: [
+                    {
+                        question: "Które hasło jest NAJSILNIEJSZE?",
+                        options: [
+                            "123456",
+                            "haslo123",
+                            "K0t$wMieszkaniu!2024",
+                            "qwerty"
+                        ],
+                        correct: 2,
+                        explanation: "Dobre hasło ma duże i małe litery, cyfry, znaki specjalne i jest długie!"
+                    },
+                    {
+                        question: "Jak często zmieniać hasła?",
+                        options: [
+                            "Nigdy, jak już są dobre",
+                            "Co miesiąc",
+                            "Co 3-6 miesięcy",
+                            "Codziennie"
+                        ],
+                        correct: 2,
+                        explanation: "Regularna zmiana haseł (co 3-6 miesięcy) zwiększa bezpieczeństwo!"
+                    },
+                    {
+                        question: "Gdzie zapisywać hasła?",
+                        options: [
+                            "Na kartce przy komputerze",
+                            "W menedżerze haseł",
+                            "W emailu",
+                            "W SMSie"
+                        ],
+                        correct: 1,
+                        explanation: "Menedżer haseł to najbezpieczniejsze miejsce! Nigdy nie zapisuj haseł w widocznym miejscu."
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "Bezpieczne Zakupy Online",
+                description: "Jak bezpiecznie robić zakupy w internecie",
+                icon: "🛒",
+                color: "#7ab729",
+                questions: [
+                    {
+                        question: "Jak rozpoznać bezpieczny sklep internetowy?",
+                        options: [
+                            "Ma kłódkę w adresie (https)",
+                            "Jest tani",
+                            "Ma ładne zdjęcia",
+                            "Wysyłają SMSy"
+                        ],
+                        correct: 0,
+                        explanation: "Szukaj kłódki i 'https://' w adresie! To oznacza szyfrowane połączenie."
+                    },
+                    {
+                        question: "Płacąc kartą online, co jest ważne?",
+                        options: [
+                            "Podawać PIN telefonicznie",
+                            "Używać 3D Secure (potwierdzenie w aplikacji)",
+                            "Wysyłać zdjęcie karty",
+                            "Dawać numer CVV każdemu"
+                        ],
+                        correct: 1,
+                        explanation: "3D Secure to dodatkowe potwierdzenie w aplikacji bankowej - zawsze z niego korzystaj!"
+                    },
+                    {
+                        question: "Sklep oferuje 'super okazję' - 90% taniej. Co robisz?",
+                        options: [
+                            "Kupuję natychmiast!",
+                            "Sprawdzam opinie o sklepie",
+                            "Płacę z góry przelewem",
+                            "Podaję wszystkie dane"
+                        ],
+                        correct: 1,
+                        explanation: "Zbyt dobre oferty to często pułapka! Sprawdź opinie i wiarygodność sklepu."
+                    }
+                ]
+            },
+            {
+                id: 4,
+                title: "Telefon od 'Wnuczka'",
+                description: "Rozpoznawanie oszustw telefonicznych",
+                icon: "📞",
+                color: "#ff9600",
+                questions: [
+                    {
+                        question: "Dzwoni 'wnuczek' i prosi o pilną pożyczkę. Co robisz?",
+                        options: [
+                            "Wysyłam pieniądze natychmiast",
+                            "Rozłączam się i dzwonię do wnuczka",
+                            "Pytam o dane konta",
+                            "Proszę o numer telefonu"
+                        ],
+                        correct: 1,
+                        explanation: "Zawsze zweryfikuj dzwoniącego! Rozłącz się i zadzwoń bezpośrednio do bliskiej osoby."
+                    },
+                    {
+                        question: "Ktoś dzwoni z 'policji' i prosi o dane. Twoje działanie?",
+                        options: [
+                            "Podaję wszystkie dane",
+                            "Przelewam pieniądze na 'bezpieczne konto'",
+                            "Rozłączam się i dzwonię na 112",
+                            "Idę do bankomatu"
+                        ],
+                        correct: 2,
+                        explanation: "Policja nigdy nie prosi o dane ani pieniądze przez telefon! Zadzwoń na 112 aby zweryfikować."
+                    },
+                    {
+                        question: "Jak rozpoznać oszusta przez telefon?",
+                        options: [
+                            "Mówi spokojnie",
+                            "Wywiera presję i pośpiech",
+                            "Przedstawia się",
+                            "Dzwoni w dzień"
+                        ],
+                        correct: 1,
+                        explanation: "Oszuści zawsze wywierają presję czasu! Prawdziwe instytucje dają czas na decyzję."
+                    }
+                ]
+            },
+            {
+                id: 5,
+                title: "Social Media - Bezpieczeństwo",
+                description: "Jak bezpiecznie korzystać z Facebooka i innych portali",
+                icon: "📱",
+                color: "#ff4b4b",
+                questions: [
+                    {
+                        question: "Kto powinien widzieć Twoje posty na Facebooku?",
+                        options: [
+                            "Wszyscy na świecie",
+                            "Tylko znajomi",
+                            "Tylko reklamodawcy",
+                            "Nie ma to znaczenia"
+                        ],
+                        correct: 1,
+                        explanation: "Ustawienia prywatności powinny ograniczać widoczność do znajomych! Nie udostępniaj wszystkiego publicznie."
+                    },
+                    {
+                        question: "Dostałeś wiadomość od znajomego z prośbą o kod SMS. Co to?",
+                        options: [
+                            "Normalna prośba",
+                            "Próba przejęcia konta",
+                            "Nowa funkcja Facebooka",
+                            "Gra"
+                        ],
+                        correct: 1,
+                        explanation: "NIGDY nie podawaj kodów SMS! To próba przejęcia Twojego konta."
+                    },
+                    {
+                        question: "Jakie informacje NIE należy podawać w social media?",
+                        options: [
+                            "Ulubiony kolor",
+                            "Adres domowy i PESEL",
+                            "Imię psa",
+                            "Hobby"
+                        ],
+                        correct: 1,
+                        explanation: "Nigdy nie udostępniaj adresu, PESEL, numeru dowodu! To dane dla oszustów."
+                    }
+                ]
+            }
+        ];
+
+        // Mascot expressions
+        const mascotExpressions = {
+            happy: ['\\( ^_^ )/', '٩(◕‿◕｡)۶', '(≧◡≦)', '☆⌒(●ゝω・)b'],
+            thinking: ['(・_・;)', '(￣^￣)', 'o(･ω･*)o', '(´・ω・`)'],
+            surprised: ['(°ロ°)', 'Σ(°ロ°)', '(⊙_⊙)', '（＠口＠）'],
+            celebrating: ['＼(^o^)／', 'ヽ(・∀・)ノ', '♪(┌・。・)┌', '\\(★O_w_O)O'],
+            encouraging: ['(๑•̀ㅂ•́)و✧', '加油 (ง •̀_•́)ง', '(ﾉ´ヮ´) ﾉ*: ･ﾟ', 'You can do it! (๑•̀ㅂ•́)و']
+        };
+
+        // DOM Elements
+        const screens = {
+            home: document.getElementById('home-screen'),
+            quiz: document.getElementById('quiz-screen'),
+            results: document.getElementById('results-screen')
+        };
+
+        const mascots = {
+            home: document.getElementById('home-mascot'),
+            quiz: document.getElementById('quiz-mascot')
+        };
+
+        const speechBubble = document.getElementById('home-speech');
+
+        // Initialize
+        function init() {
+            loadProgress();
+            renderLessons();
+            updateHeader();
+            setupEventListeners();
+            animateMascotPeriodically();
+        }
+
+        // Load progress from localStorage
+        function loadProgress() {
+            const saved = localStorage.getItem('cyberbez_progress');
+            if (saved) {
+                const data = JSON.parse(saved);
+                gameState.xp = data.xp || 0;
+                gameState.streak = data.streak || 0;
+                gameState.lastLogin = data.lastLogin;
+                
+                // Check streak
+                checkStreak();
+            } else {
+                // First time login
+                gameState.streak = 1;
+                gameState.lastLogin = new Date().toDateString();
+                saveProgress();
+            }
+        }
+
+        // Save progress to localStorage
+        function saveProgress() {
+            localStorage.setItem('cyberbez_progress', JSON.stringify({
+                xp: gameState.xp,
+                streak: gameState.streak,
+                lastLogin: gameState.lastLogin,
+                completedLessons: gameState.completedLessons
+            }));
+        }
+
+        // Check and update streak
+        function checkStreak() {
+            const today = new Date().toDateString();
+            const yesterday = new Date(Date.now() - 86400000).toDateString();
+            
+            if (gameState.lastLogin !== today) {
+                if (gameState.lastLogin === yesterday) {
+                    // Consecutive day
+                    gameState.streak++;
+                } else if (gameState.lastLogin !== today) {
+                    // Broken streak, reset
+                    gameState.streak = 1;
+                }
+                gameState.lastLogin = today;
+                saveProgress();
+            }
+        }
+
+        // Update header display
+        function updateHeader() {
+            document.getElementById('streak-count').textContent = gameState.streak;
+            document.getElementById('xp-count').textContent = gameState.xp;
+        }
+
+        // Render lessons list
+        function renderLessons() {
+            const lessonList = document.getElementById('lesson-list');
+            lessonList.innerHTML = '';
+
+            lessons.forEach((lesson, index) => {
+                const card = document.createElement('div');
+                card.className = 'lesson-card';
+                card.innerHTML = `
+                    <div class="lesson-icon">${lesson.icon}</div>
+                    <div class="lesson-title">${lesson.title}</div>
+                    <div class="lesson-desc">${lesson.description}</div>
+                    <div class="lesson-progress">
+                        <div class="lesson-progress-bar" style="width: ${getLessonProgress(index)}%"></div>
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => startLesson(index));
+                lessonList.appendChild(card);
+            });
+        }
+
+        // Get lesson progress
+        function getLessonProgress(index) {
+            return Math.min(100, (index + 1) * 20);
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('check-answer-btn').addEventListener('click', checkAnswer);
+            document.getElementById('continue-btn').addEventListener('click', nextQuestion);
+            document.getElementById('back-home-btn').addEventListener('click', showHomeScreen);
+
+            // Mascot interactions
+            mascots.home.addEventListener('click', () => {
+                showRandomSpeech();
+                animateMascot('happy');
+            });
+
+            mascots.quiz.addEventListener('click', () => {
+                showRandomSpeech();
+                animateMascot('happy');
+            });
+        }
+
+        // Show random speech bubble
+        function showRandomSpeech() {
+            const speeches = [
+                "Dasz radę! 💪",
+                "Jesteś świetny! 🌟",
+                "Ucz się codziennie! 📚",
+                "Bezpieczeństwo jest ważne! 🛡️",
+                "Nie poddawaj się! 🎯",
+                "Każdy dzień to nowy sukces! ☀️"
+            ];
+            
+            speechBubble.textContent = speeches[Math.floor(Math.random() * speeches.length)];
+            speechBubble.style.animation = 'none';
+            setTimeout(() => speechBubble.style.animation = 'bubblePop 0.3s ease', 10);
+        }
+
+        // Animate mascot periodically
+        function animateMascotPeriodically() {
+            setInterval(() => {
+                const expressions = Object.values(mascotExpressions).flat();
+                const randomExpression = expressions[Math.floor(Math.random() * expressions.length)];
+                
+                if (screens.home.classList.contains('active')) {
+                    mascots.home.textContent = randomExpression;
+                } else if (screens.quiz.classList.contains('active')) {
+                    mascots.quiz.textContent = randomExpression;
+                }
+            }, 5000);
+        }
+
+        // Animate mascot with specific expression
+        function animateMascot(expression) {
+            const expressions = mascotExpressions[expression] || mascotExpressions.happy;
+            const randomExpression = expressions[Math.floor(Math.random() * expressions.length)];
+            
+            if (screens.home.classList.contains('active')) {
+                mascots.home.textContent = randomExpression;
+                mascots.home.className = `mascot ${expression}`;
+                setTimeout(() => mascots.home.className = 'mascot', 1000);
+            } else if (screens.quiz.classList.contains('active')) {
+                mascots.quiz.textContent = randomExpression;
+                mascots.quiz.className = `mascot ${expression}`;
+                setTimeout(() => mascots.quiz.className = 'mascot', 1000);
+            }
+        }
+
+        // Transition between screens with magic move effect
+        function transitionToScreen(fromScreen, toScreen) {
+            fromScreen.classList.add('exit');
+            fromScreen.classList.remove('active');
+            
+            setTimeout(() => {
+                toScreen.classList.add('active');
+                fromScreen.classList.remove('exit');
+            }, 500);
+        }
+
+        // Start a lesson
+        function startLesson(index) {
+            gameState.currentLesson = lessons[index];
+            gameState.currentQuestion = 0;
+            gameState.score = 0;
+            gameState.selectedOption = null;
+
+            transitionToScreen(screens.home, screens.quiz);
+            showQuestion();
+            animateMascot('encouraging');
+        }
+
+        // Show current question
+        function showQuestion() {
+            const lesson = gameState.currentLesson;
+            const question = lesson.questions[gameState.currentQuestion];
+            
+            // Update progress bar
+            const progress = ((gameState.currentQuestion) / lesson.questions.length) * 100;
+            document.getElementById('quiz-progress').style.width = `${progress}%`;
+
+            // Update question text
+            document.getElementById('question-text').textContent = question.question;
+
+            // Create options
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = option;
+                btn.addEventListener('click', () => selectOption(index, btn));
+                optionsContainer.appendChild(btn);
+            });
+
+            // Reset state
+            gameState.selectedOption = null;
+            document.getElementById('check-answer-btn').disabled = true;
+            animateMascot('thinking');
+        }
+
+        // Select an option
+        function selectOption(index, btn) {
+            // Remove previous selection
+            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+            
+            // Add new selection
+            btn.classList.add('selected');
+            gameState.selectedOption = index;
+            document.getElementById('check-answer-btn').disabled = false;
+            
+            // Play sound effect (visual feedback)
+            createFloatXP(btn, '+1');
+        }
+
+        // Check the answer
+        function checkAnswer() {
+            const lesson = gameState.currentLesson;
+            const question = lesson.questions[gameState.currentQuestion];
+            const options = document.querySelectorAll('.option-btn');
+            const isCorrect = gameState.selectedOption === question.correct;
+
+            // Disable all buttons
+            options.forEach(btn => btn.disabled = true);
+
+            // Show result
+            if (isCorrect) {
+                options[gameState.selectedOption].classList.add('correct');
+                gameState.score++;
+                showFeedback(true, question.explanation);
+                animateMascot('celebrating');
+                createConfetti();
+            } else {
+                options[gameState.selectedOption].classList.add('wrong');
+                options[question.correct].classList.add('correct');
+                showFeedback(false, question.explanation);
+                animateMascot('surprised');
+            }
+
+            // Update XP
+            if (isCorrect) {
+                gameState.xp += 10;
+                updateHeader();
+                saveProgress();
+            }
+        }
+
+        // Show feedback panel
+        function showFeedback(isCorrect, explanation) {
+            const container = document.getElementById('feedback-container');
+            const title = document.getElementById('feedback-title');
+            const text = document.getElementById('feedback-text');
+
+            container.className = `feedback-container show ${isCorrect ? 'correct' : 'wrong'}`;
+            title.textContent = isCorrect ? '✅ Świetnie!' : '❌ Nie do końca...';
+            title.className = `feedback-title ${isCorrect ? 'feedback-correct' : 'feedback-wrong'}`;
+            text.textContent = explanation;
+        }
+
+        // Hide feedback panel
+        function hideFeedback() {
+            document.getElementById('feedback-container').classList.remove('show');
+        }
+
+        // Go to next question or results
+        function nextQuestion() {
+            hideFeedback();
+            gameState.currentQuestion++;
+
+            if (gameState.currentQuestion >= gameState.currentLesson.questions.length) {
+                showResults();
+            } else {
+                showQuestion();
+            }
+        }
+
+        // Show results screen
+        function showResults() {
+            const totalQuestions = gameState.currentLesson.questions.length;
+            const xpGained = gameState.score * 10;
+
+            // Update results display
+            document.getElementById('results-icon').textContent = gameState.score === totalQuestions ? '🏆' : '🎉';
+            document.getElementById('results-title').textContent = 
+                gameState.score === totalQuestions ? 'Perfekcyjnie! 🌟' : 'Dobra robota! 👍';
+            document.getElementById('xp-gained').textContent = `+${xpGained} XP`;
+            document.getElementById('correct-count').textContent = gameState.score;
+            document.getElementById('total-count').textContent = totalQuestions;
+
+            // Add bonus XP for perfect score
+            if (gameState.score === totalQuestions) {
+                gameState.xp += 20; // Bonus
+            }
+
+            updateHeader();
+            saveProgress();
+
+            // Transition to results
+            transitionToScreen(screens.quiz, screens.results);
+            
+            // Celebrate
+            if (gameState.score >= totalQuestions / 2) {
+                createConfetti();
+                animateMascot('celebrating');
+            }
+        }
+
+        // Return to home screen
+        function showHomeScreen() {
+            transitionToScreen(screens.results, screens.home);
+            renderLessons();
+            animateMascot('happy');
+        }
+
+        // Create floating XP effect
+        function createFloatXP(element, text) {
+            const rect = element.getBoundingClientRect();
+            const floatXP = document.createElement('div');
+            floatXP.className = 'float-xp';
+            floatXP.textContent = text;
+            floatXP.style.left = `${rect.left + rect.width / 2}px`;
+            floatXP.style.top = `${rect.top}px`;
+            document.body.appendChild(floatXP);
+
+            setTimeout(() => floatXP.remove(), 1000);
+        }
+
+        // Create confetti celebration
+        function createConfetti() {
+            const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = `${Math.random() * 100}vw`;
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = `${Math.random() * 0.5}s`;
+                    document.body.appendChild(confetti);
+
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        // Start the app
+        init();
+    </script>
+</body>
+</html>
