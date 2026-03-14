@@ -11,6 +11,9 @@ const glossaryTerms = [
   { term: 'Firewall (Zapora sieciowa)', definition: 'System zabezpieczeń, który monitoruje i kontroluje ruch sieciowy, blokując nieautoryzowany dostęp.', lessonId: 'ochrona1' },
   { term: 'Cookie (Ciasteczka)', definition: 'Małe pliki tekstowe zapisywane przez strony internetowe w przeglądarce, służące do zapamiętywania preferencji użytkownika.', lessonId: 'surf2' },
   { term: 'Szyfrowanie', definition: 'Proces zamiany danych na postać nieczytelną dla osób nieuprawnionych, możliwą do odczytania tylko za pomocą odpowiedniego klucza.', lessonId: 'ochrona2' },
+  { term: 'Socjotechnika', definition: 'Metoda manipulacji, w której oszuści wykorzystują ludzkie emocje (strach, pośpiech, zaufanie), aby nakłonić ofiarę do ujawnienia danych lub przelania pieniędzy.', lessonId: 'surf5' },
+  { term: 'Smishing', definition: 'Oszustwo polegające na wysyłaniu fałszywych wiadomości SMS, które mają na celu wyłudzenie danych lub pieniędzy (np. "dopłata do paczki").', lessonId: 'l_sms_phishing' },
+  { term: 'Uprawnienia aplikacji', definition: 'Zgody udzielane aplikacjom na dostęp do funkcji telefonu (np. aparatu, mikrofonu, kontaktów). Należy zawsze sprawdzać, czy są one uzasadnione.', lessonId: 'l_app_permissions' },
 ];
 
 export function GlossaryView({ completedLessons }: { completedLessons: string[] }) {

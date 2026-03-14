@@ -94,7 +94,7 @@ export function HomeView({ xp, streak, completedLessons, onStartLesson, justComp
       {/* Header */}
       <div className="w-full max-w-md p-6 flex flex-col items-center text-center mt-4">
         <Mascot mood="happy" className="mb-4" />
-        <h1 className="text-3xl font-bold text-stone-800 dark:text-stone-100 mb-2">Bezpieczny Senior</h1>
+        <h1 className="text-3xl font-bold text-stone-800 dark:text-stone-100 mb-2">Cyfrowy Przewodnik</h1>
         <p className="text-stone-600 dark:text-stone-300 text-lg">Ucz się jak być bezpiecznym w internecie!</p>
       </div>
 
