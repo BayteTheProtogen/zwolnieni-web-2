@@ -8,6 +8,9 @@ const glossaryTerms = [
   { term: 'HTTPS', definition: 'Bezpieczna wersja protokołu internetowego. Oznacza, że połączenie między Twoją przeglądarką a stroną jest szyfrowane (symbol zamkniętej kłódki).', lessonId: 'surf3' },
   { term: 'Spam', definition: 'Niechciane, masowo wysyłane wiadomości e-mail lub SMS, często zawierające reklamy lub próby oszustwa.', lessonId: 'l2' },
   { term: 'Złośliwe oprogramowanie (Malware)', definition: 'Programy komputerowe stworzone w celu uszkodzenia sprzętu, kradzieży danych lub szpiegowania użytkownika (np. wirusy, trojany).', lessonId: 'surf5' },
+  { term: 'Firewall (Zapora sieciowa)', definition: 'System zabezpieczeń, który monitoruje i kontroluje ruch sieciowy, blokując nieautoryzowany dostęp.', lessonId: 'ochrona1' },
+  { term: 'Cookie (Ciasteczka)', definition: 'Małe pliki tekstowe zapisywane przez strony internetowe w przeglądarce, służące do zapamiętywania preferencji użytkownika.', lessonId: 'surf2' },
+  { term: 'Szyfrowanie', definition: 'Proces zamiany danych na postać nieczytelną dla osób nieuprawnionych, możliwą do odczytania tylko za pomocą odpowiedniego klucza.', lessonId: 'ochrona2' },
 ];
 
 export function GlossaryView({ completedLessons }: { completedLessons: string[] }) {

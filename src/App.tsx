@@ -70,22 +70,29 @@ export default function App() {
   });
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isDeveloperMode, setIsDeveloperMode] = useState(false);
-  const [devModeKeys, setDevModeKeys] = useState<string[]>([]);
+  const [typedSequence, setTypedSequence] = useState('');
 
   // Developer mode listener
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.altKey && event.shiftKey && event.key === 'D') {
-        setDevModeKeys(prev => {
-          const next = [...prev, 'D'];
-          if (next.length === 4) {
-            setIsDeveloperMode(true);
-            alert('Developer Mode Enabled! All lessons unlocked.');
-            return [];
-          }
-          return next;
-        });
+      // Ignore if typing in an input or textarea
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement
+      ) {
+        return;
       }
+
+      setTypedSequence(prev => {
+        const next = (prev + event.key).toLowerCase();
+        if (next.endsWith('supersecretdeveloper')) {
+          setIsDeveloperMode(true);
+          alert('Developer Mode Enabled! All lessons unlocked.');
+          return '';
+        }
+        // Keep only the last 20 characters
+        return next.slice(-20);
+      });
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
