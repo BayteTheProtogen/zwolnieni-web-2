@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { User, Flame, Star, Target, Moon, Sun } from 'lucide-react';
+import { User, Flame, Star, Target, Moon, Sun, RotateCcw } from 'lucide-react';
 import { badges } from '../data/badges';
 
 interface ProfileViewProps {
@@ -9,9 +9,10 @@ interface ProfileViewProps {
   unlockedBadges: string[];
   isDarkMode: boolean;
   toggleDarkMode: () => void;
+  resetOnboarding: () => void;
 }
 
-export function ProfileView({ xp, streak, accuracy, unlockedBadges, isDarkMode, toggleDarkMode }: ProfileViewProps) {
+export function ProfileView({ xp, streak, accuracy, unlockedBadges, isDarkMode, toggleDarkMode, resetOnboarding }: ProfileViewProps) {
   return (
     <motion.div
       className="min-h-screen bg-stone-100 dark:bg-stone-900 flex flex-col items-center pb-24 transition-colors duration-300"
@@ -24,13 +25,23 @@ export function ProfileView({ xp, streak, accuracy, unlockedBadges, isDarkMode, 
           <User className="w-8 h-8 text-blue-500" />
           <h1 className="text-2xl font-bold text-stone-800 dark:text-stone-100">Twój Profil</h1>
         </div>
-        <button 
-          onClick={toggleDarkMode}
-          className="p-2 rounded-full bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600 transition-colors"
-          aria-label="Toggle dark mode"
-        >
-          {isDarkMode ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
-        </button>
+        <div className="flex gap-2">
+          <button 
+            onClick={resetOnboarding}
+            className="p-2 rounded-full bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600 transition-colors"
+            aria-label="Powtórz samouczek"
+            title="Powtórz samouczek"
+          >
+            <RotateCcw className="w-6 h-6" />
+          </button>
+          <button 
+            onClick={toggleDarkMode}
+            className="p-2 rounded-full bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600 transition-colors"
+            aria-label="Toggle dark mode"
+          >
+            {isDarkMode ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
 
       <div className="w-full max-w-md p-4 flex flex-col gap-6 mt-4">

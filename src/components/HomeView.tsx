@@ -10,9 +10,12 @@ interface HomeViewProps {
   streak: number;
   completedLessons: string[];
   onStartLesson: (lessonId: string) => void;
+  justCompletedLesson?: boolean;
+  onScrolled?: () => void;
+  isDeveloperMode?: boolean;
 }
 
-export function HomeView({ xp, streak, completedLessons, onStartLesson }: HomeViewProps) {
+export function HomeView({ xp, streak, completedLessons, onStartLesson, justCompletedLesson, onScrolled, isDeveloperMode }: HomeViewProps) {
   const targetLessonRef = useRef<HTMLDivElement>(null);
   const isTargetInView = useInView(targetLessonRef, { margin: "-150px" });
   const { scrollY } = useScroll();
@@ -24,6 +27,15 @@ export function HomeView({ xp, streak, completedLessons, onStartLesson }: HomeVi
 
   const nextLessonIndex = lessons.findIndex((l, i) => !completedLessons.includes(l.id) && (i === 0 || completedLessons.includes(lessons[i - 1].id)));
   const targetLessonId = nextLessonIndex !== -1 ? lessons[nextLessonIndex].id : lessons[lessons.length - 1].id;
+
+  React.useEffect(() => {
+    if (justCompletedLesson && targetLessonRef.current) {
+      setTimeout(() => {
+        targetLessonRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (onScrolled) onScrolled();
+      }, 500);
+    }
+  }, [justCompletedLesson, onScrolled]);
 
   let currentModule = '';
 
@@ -94,14 +106,22 @@ export function HomeView({ xp, streak, completedLessons, onStartLesson }: HomeVi
         {lessons.map((lesson, index) => {
           const isCompleted = completedLessons.includes(lesson.id);
           const isNext = !isCompleted && (index === 0 || completedLessons.includes(lessons[index - 1].id));
-          const isLocked = !isCompleted && !isNext;
+          const isLocked = !isCompleted && !isNext && !isDeveloperMode;
 
           const offset = index % 2 === 0 ? -40 : 40;
+
+          const moduleNames: Record<string, string> = {
+            'podstawy': 'Moduł 1: Podstawy Internetu',
+            'hasla': 'Moduł 2: Bezpieczne Hasła',
+            'bezpieczne_surfowanie': 'Moduł 3: Bezpieczne Surfowanie',
+            'zagrozenia': 'Moduł 4: Zagrożenia i Oszustwa',
+            'ochrona': 'Moduł 5: Ochrona Urządzeń i Kont'
+          };
 
           const moduleHeader = lesson.moduleId !== currentModule ? (
             <div className="w-full text-center z-20 my-2">
               <h2 className="text-xl font-bold text-stone-700 dark:text-stone-200 bg-white dark:bg-stone-800 px-6 py-3 rounded-full shadow-md inline-block border-2 border-stone-200 dark:border-stone-700 transition-colors duration-300">
-                {lesson.moduleId === 'podstawy' ? 'Moduł 1: Bezpieczne Hasła' : 'Moduł 2: Bezpieczne Surfowanie'}
+                {moduleNames[lesson.moduleId] || `Moduł: ${lesson.moduleId}`}
               </h2>
             </div>
           ) : null;

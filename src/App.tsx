@@ -63,16 +63,36 @@ export default function App() {
   const [badgeQueue, setBadgeQueue] = useState<Badge[]>([]);
   const [totalQuestionsAnswered, setTotalQuestionsAnswered] = useState(0);
   const [totalCorrectAnswers, setTotalCorrectAnswers] = useState(0);
-  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(true);
+  const [justCompletedLesson, setJustCompletedLesson] = useState(false);
+  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(() => {
+    const saved = localStorage.getItem('hasCompletedOnboarding_v2');
+    return saved === 'true';
+  });
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDeveloperMode, setIsDeveloperMode] = useState(false);
+  const [devModeKeys, setDevModeKeys] = useState<string[]>([]);
+
+  // Developer mode listener
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.altKey && event.shiftKey && event.key === 'D') {
+        setDevModeKeys(prev => {
+          const next = [...prev, 'D'];
+          if (next.length === 4) {
+            setIsDeveloperMode(true);
+            alert('Developer Mode Enabled! All lessons unlocked.');
+            return [];
+          }
+          return next;
+        });
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Load from localStorage
   useEffect(() => {
-    const savedOnboarding = localStorage.getItem('hasCompletedOnboarding');
-    if (savedOnboarding === 'false' || !savedOnboarding) {
-      setHasCompletedOnboarding(false);
-    }
-
     const savedDarkMode = localStorage.getItem('isDarkMode');
     if (savedDarkMode === 'true') {
       setIsDarkMode(true);
@@ -108,7 +128,7 @@ export default function App() {
 
   // Save to localStorage
   useEffect(() => {
-    localStorage.setItem('hasCompletedOnboarding', hasCompletedOnboarding.toString());
+    localStorage.setItem('hasCompletedOnboarding_v2', hasCompletedOnboarding.toString());
     localStorage.setItem('isDarkMode', isDarkMode.toString());
     localStorage.setItem('completedLessons', JSON.stringify(completedLessons));
     localStorage.setItem('xp', xp.toString());
@@ -177,6 +197,7 @@ export default function App() {
 
   const handleContinueFromComplete = () => {
     setCurrentLessonId(null);
+    setJustCompletedLesson(true);
     setView(activeTab);
   };
 
@@ -201,10 +222,18 @@ export default function App() {
     ? Math.round((totalCorrectAnswers / totalQuestionsAnswered) * 100) 
     : 100;
 
+  const resetOnboarding = () => {
+    setHasCompletedOnboarding(false);
+    localStorage.setItem('hasCompletedOnboarding_v2', 'false');
+  };
+
   if (!hasCompletedOnboarding) {
     return (
       <OnboardingView 
-        onComplete={() => setHasCompletedOnboarding(true)} 
+        onComplete={() => {
+          setHasCompletedOnboarding(true);
+          localStorage.setItem('hasCompletedOnboarding_v2', 'true');
+        }} 
         isDarkMode={isDarkMode}
         toggleDarkMode={toggleDarkMode}
       />
@@ -221,6 +250,9 @@ export default function App() {
             streak={streak} 
             completedLessons={completedLessons} 
             onStartLesson={handleStartLesson} 
+            justCompletedLesson={justCompletedLesson}
+            onScrolled={() => setJustCompletedLesson(false)}
+            isDeveloperMode={isDeveloperMode}
           />
         )}
         {view === 'glossary' && (
@@ -234,6 +266,7 @@ export default function App() {
             unlockedBadges={unlockedBadges}
             isDarkMode={isDarkMode}
             toggleDarkMode={toggleDarkMode}
+            resetOnboarding={resetOnboarding}
           />
         )}
         {view === 'lesson' && currentLessonId && (
@@ -258,7 +291,7 @@ export default function App() {
       )}
 
       <AnimatePresence>
-        {badgeQueue.length > 0 && (
+        {view === 'home' && badgeQueue.length > 0 && (
           <BadgeModal 
             key="badge-modal" 
             badge={badgeQueue[0]} 

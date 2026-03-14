@@ -60,10 +60,11 @@ export function LessonCompleteView({ xpEarned, newStreak, passed, onContinue }: 
 
       <motion.button
         onClick={onContinue}
-        className={`w-full max-w-md py-4 rounded-2xl ${passed ? 'bg-emerald-500 hover:bg-emerald-600 dark:bg-emerald-600 dark:hover:bg-emerald-700' : 'bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700'} text-white text-2xl font-bold shadow-lg transition-transform active:scale-95`}
+        className={`w-full max-w-md py-4 rounded-2xl ${passed ? 'bg-emerald-500 hover:bg-emerald-600 dark:bg-emerald-600 dark:hover:bg-emerald-700' : 'bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700'} text-white text-2xl font-bold shadow-lg`}
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 1 }}
+        whileTap={{ scale: 0.95 }}
       >
         Dalej
       </motion.button>
