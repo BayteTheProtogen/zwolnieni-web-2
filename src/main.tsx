@@ -4,11 +4,14 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import App from './App.tsx';
 import './index.css';
+import { AccessibilityProvider } from './contexts/AccessibilityContext';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
-    <Analytics />
-    <SpeedInsights />
+    <AccessibilityProvider>
+      <App />
+      <Analytics />
+      <SpeedInsights />
+    </AccessibilityProvider>
   </StrictMode>,
 );

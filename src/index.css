@@ -1,3 +1,65 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+.high-contrast {
+  --tw-bg-opacity: 1 !important;
+  --tw-text-opacity: 1 !important;
+  --tw-border-opacity: 1 !important;
+  
+  /* Boost text contrast in light mode */
+  --color-stone-400: #000000;
+  --color-stone-500: #000000;
+  --color-stone-600: #000000;
+  
+  /* Boost primary colors in light mode */
+  --color-blue-400: #1d4ed8;
+  --color-blue-500: #1d4ed8;
+  --color-emerald-400: #15803d;
+  --color-emerald-500: #15803d;
+  --color-rose-400: #be123c;
+  --color-rose-500: #be123c;
+  --color-amber-400: #b45309;
+  --color-amber-500: #b45309;
+  --color-orange-400: #c2410c;
+  --color-orange-500: #c2410c;
+}
+
+.high-contrast.dark {
+  /* Boost text contrast in dark mode */
+  --color-stone-400: #ffffff;
+  --color-stone-500: #ffffff;
+  --color-stone-600: #ffffff;
+  
+  /* Boost primary colors in dark mode */
+  --color-blue-500: #60a5fa;
+  --color-blue-600: #60a5fa;
+  --color-emerald-500: #4ade80;
+  --color-emerald-600: #4ade80;
+  --color-rose-500: #fb7185;
+  --color-rose-600: #fb7185;
+  --color-amber-500: #fbbf24;
+  --color-amber-600: #fbbf24;
+  --color-orange-500: #fb923c;
+  --color-orange-600: #fb923c;
+}
+
+/* Large text is handled by tailwind's text-lg class on root, but we can also scale up some base elements if needed */
+html.text-lg {
+  font-size: 18px;
+}
+
+/* Accessibility Overrides - placed at bottom for maximum precedence */
+.reduce-motion, 
+.reduce-motion *, 
+.reduce-motion *::before, 
+.reduce-motion *::after {
+  animation-duration: 0s !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0s !important;
+  scroll-behavior: auto !important;
+  transition: none !important;
+  animation: none !important;
+  transition-property: none !important;
+}
+

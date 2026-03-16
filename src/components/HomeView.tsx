@@ -3,6 +3,7 @@ import { motion, useScroll, useMotionValueEvent, AnimatePresence, useInView } fr
 import { Flame, Star, ShieldCheck, Lock, Navigation } from 'lucide-react';
 import { lessons } from '../data/lessons';
 import { Mascot } from './Mascot';
+import { useAccessibility } from '../contexts/AccessibilityContext';
 
 interface HomeViewProps {
   key?: string;
@@ -16,6 +17,7 @@ interface HomeViewProps {
 }
 
 export function HomeView({ xp, streak, completedLessons, onStartLesson, justCompletedLesson, onScrolled, isDeveloperMode }: HomeViewProps) {
+  const { settings } = useAccessibility();
   const targetLessonRef = useRef<HTMLDivElement>(null);
   const isTargetInView = useInView(targetLessonRef, { margin: "-150px" });
   const { scrollY } = useScroll();
@@ -115,12 +117,16 @@ export function HomeView({ xp, streak, completedLessons, onStartLesson, justComp
             'hasla': 'Moduł 2: Bezpieczne Hasła',
             'bezpieczne_surfowanie': 'Moduł 3: Bezpieczne Surfowanie',
             'zagrozenia': 'Moduł 4: Zagrożenia i Oszustwa',
-            'ochrona': 'Moduł 5: Ochrona Urządzeń i Kont'
+            'ochrona': 'Moduł 5: Ochrona Urządzeń i Kont',
+            'zakupy_online': 'Moduł 6: Zakupy Online',
+            'social_media': 'Moduł 7: Media Społecznościowe',
+            'urzadzenia': 'Moduł 8: Smartfony i Komputery',
+            'ai_fake_news': 'Moduł 9: AI i Fake News'
           };
 
           const moduleHeader = lesson.moduleId !== currentModule ? (
-            <div className="w-full text-center z-20 my-2">
-              <h2 className="text-xl font-bold text-stone-700 dark:text-stone-200 bg-white dark:bg-stone-800 px-6 py-3 rounded-full shadow-md inline-block border-2 border-stone-200 dark:border-stone-700 transition-colors duration-300">
+            <div className="w-full text-center z-20 my-2 px-4">
+              <h2 className="text-xl font-bold text-stone-700 dark:text-stone-200 bg-white dark:bg-stone-800 px-6 py-3 rounded-full shadow-md inline-block border-2 border-stone-200 dark:border-stone-700 transition-colors duration-300 max-w-full break-words">
                 {moduleNames[lesson.moduleId] || `Moduł: ${lesson.moduleId}`}
               </h2>
             </div>
@@ -145,7 +151,7 @@ export function HomeView({ xp, streak, completedLessons, onStartLesson, justComp
                     isCompleted
                       ? 'bg-emerald-500 border-emerald-700 text-white'
                       : isNext
-                      ? 'bg-blue-500 border-blue-700 text-white ring-4 ring-blue-300 dark:ring-blue-900/50 ring-offset-2 dark:ring-offset-stone-900 animate-pulse'
+                      ? `bg-blue-500 border-blue-700 text-white ring-4 ring-blue-300 dark:ring-blue-900/50 ring-offset-2 dark:ring-offset-stone-900 ${settings.reduceMotion ? '' : 'animate-pulse'}`
                       : 'bg-stone-300 dark:bg-stone-700 border-stone-400 dark:border-stone-800 text-stone-500 dark:text-stone-400 cursor-not-allowed'
                   }`}
                 >
@@ -159,8 +165,8 @@ export function HomeView({ xp, streak, completedLessons, onStartLesson, justComp
                 </button>
                 
                 {/* Tooltip/Label */}
-                <div className="absolute top-full mt-4 bg-white dark:bg-stone-800 px-4 py-2 rounded-xl shadow-md border border-stone-200 dark:border-stone-700 whitespace-nowrap z-10 pointer-events-none transition-colors duration-300">
-                  <p className="font-bold text-stone-800 dark:text-stone-100 text-lg">{lesson.title}</p>
+                <div className="absolute top-full mt-4 bg-white dark:bg-stone-800 px-4 py-2 rounded-xl shadow-md border border-stone-200 dark:border-stone-700 z-10 pointer-events-none transition-colors duration-300 max-w-[80vw] sm:max-w-[250px] w-max text-center">
+                  <p className="font-bold text-stone-800 dark:text-stone-100 text-sm sm:text-base leading-tight">{lesson.title}</p>
                 </div>
               </motion.div>
             </React.Fragment>

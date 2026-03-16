@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
+import { useAccessibility } from '../contexts/AccessibilityContext';
 
 export type Mood = 'neutral' | 'happy' | 'sad' | 'thinking' | 'celebrating';
 
@@ -18,19 +19,22 @@ const faces: Record<Mood, string> = {
 };
 
 export function Mascot({ mood, className = '', layoutId = 'mascot' }: MascotProps) {
+  const { settings } = useAccessibility();
   const [isBlinking, setIsBlinking] = useState(false);
 
   useEffect(() => {
+    if (settings.reduceMotion) return;
+
     const blinkInterval = setInterval(() => {
       setIsBlinking(true);
       setTimeout(() => setIsBlinking(false), 150);
     }, Math.random() * 3000 + 2000); // Random blink every 2-5 seconds
 
     return () => clearInterval(blinkInterval);
-  }, []);
+  }, [settings.reduceMotion]);
 
   const getFace = () => {
-    if (isBlinking && (mood === 'neutral' || mood === 'thinking')) {
+    if (!settings.reduceMotion && isBlinking && (mood === 'neutral' || mood === 'thinking')) {
       return '(-_-)';
     }
     return faces[mood];
@@ -68,7 +72,7 @@ export function Mascot({ mood, className = '', layoutId = 'mascot' }: MascotProp
   return (
     <motion.div
       className={`text-5xl sm:text-6xl font-mono font-bold text-emerald-600 dark:text-emerald-400 drop-shadow-md select-none transition-colors duration-300 ${className}`}
-      animate={animations[mood]}
+      animate={settings.reduceMotion ? {} : animations[mood]}
       layoutId={layoutId}
     >
       {getFace()}

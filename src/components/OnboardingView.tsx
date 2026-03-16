@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Mascot } from './Mascot';
-import { Moon, Sun, ArrowRight, Check } from 'lucide-react';
+import { Moon, Sun, ArrowRight, Check, Type, Eye, Zap } from 'lucide-react';
+import { useAccessibility } from '../contexts/AccessibilityContext';
 
 interface OnboardingViewProps {
   onComplete: () => void;
@@ -11,6 +12,7 @@ interface OnboardingViewProps {
 
 export function OnboardingView({ onComplete, isDarkMode, toggleDarkMode }: OnboardingViewProps) {
   const [step, setStep] = useState(0);
+  const { settings, updateSettings } = useAccessibility();
 
   const steps = [
     {
@@ -33,6 +35,12 @@ export function OnboardingView({ onComplete, isDarkMode, toggleDarkMode }: Onboa
       content: "Wolisz jasny czy ciemny wygląd aplikacji? Możesz to zmienić w dowolnej chwili w ustawieniach profilu.",
       mascotMood: 'neutral' as const,
       showThemeToggle: true,
+    },
+    {
+      title: "Ułatwienia dostępu",
+      content: "Dostosuj aplikację do swoich potrzeb. Te ustawienia również możesz zmienić później w profilu.",
+      mascotMood: 'happy' as const,
+      showAccessibilityToggle: true,
     }
   ];
 
@@ -98,6 +106,61 @@ export function OnboardingView({ onComplete, isDarkMode, toggleDarkMode }: Onboa
                 >
                   <Moon className="w-10 h-10" />
                   <span className="font-medium">Ciemny</span>
+                </button>
+              </div>
+            )}
+
+            {currentStep.showAccessibilityToggle && (
+              <div className="flex flex-col gap-4 w-full mb-8">
+                <button
+                  onClick={() => updateSettings({ largeText: !settings.largeText })}
+                  className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all ${
+                    settings.largeText
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
+                      : 'border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <Type className="w-6 h-6" />
+                    <span className="font-medium">Duży tekst</span>
+                  </div>
+                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${settings.largeText ? 'border-blue-500 bg-blue-500 text-white' : 'border-stone-300 dark:border-stone-600'}`}>
+                    {settings.largeText && <Check className="w-4 h-4" />}
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => updateSettings({ highContrast: !settings.highContrast })}
+                  className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all ${
+                    settings.highContrast
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
+                      : 'border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <Eye className="w-6 h-6" />
+                    <span className="font-medium">Wysoki kontrast</span>
+                  </div>
+                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${settings.highContrast ? 'border-blue-500 bg-blue-500 text-white' : 'border-stone-300 dark:border-stone-600'}`}>
+                    {settings.highContrast && <Check className="w-4 h-4" />}
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => updateSettings({ reduceMotion: !settings.reduceMotion })}
+                  className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all ${
+                    settings.reduceMotion
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
+                      : 'border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <Zap className="w-6 h-6" />
+                    <span className="font-medium">Redukcja animacji</span>
+                  </div>
+                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${settings.reduceMotion ? 'border-blue-500 bg-blue-500 text-white' : 'border-stone-300 dark:border-stone-600'}`}>
+                    {settings.reduceMotion && <Check className="w-4 h-4" />}
+                  </div>
                 </button>
               </div>
             )}

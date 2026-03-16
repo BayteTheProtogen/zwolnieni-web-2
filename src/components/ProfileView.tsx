@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
-import { User, Flame, Star, Target, Moon, Sun, RotateCcw } from 'lucide-react';
+import { User, Flame, Star, Target, Moon, Sun, RotateCcw, Type, Eye, Zap, Check } from 'lucide-react';
 import { badges } from '../data/badges';
+import { useAccessibility } from '../contexts/AccessibilityContext';
 
 interface ProfileViewProps {
   xp: number;
@@ -13,6 +14,8 @@ interface ProfileViewProps {
 }
 
 export function ProfileView({ xp, streak, accuracy, unlockedBadges, isDarkMode, toggleDarkMode, resetOnboarding }: ProfileViewProps) {
+  const { settings, updateSettings } = useAccessibility();
+
   return (
     <motion.div
       className="min-h-screen bg-stone-100 dark:bg-stone-900 flex flex-col items-center pb-24 transition-colors duration-300"
@@ -64,6 +67,63 @@ export function ProfileView({ xp, streak, accuracy, unlockedBadges, isDarkMode, 
           </div>
         </div>
 
+        {/* Accessibility Settings */}
+        <div className="bg-white dark:bg-stone-800 p-6 rounded-3xl shadow-sm border border-stone-200 dark:border-stone-700 mt-4 transition-colors duration-300">
+          <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100 mb-6 text-center">Ułatwienia dostępu</h2>
+          <div className="flex flex-col gap-4">
+            <button
+              onClick={() => updateSettings({ largeText: !settings.largeText })}
+              className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all ${
+                settings.largeText
+                  ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
+                  : 'border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Type className="w-6 h-6" />
+                <span className="font-medium">Duży tekst</span>
+              </div>
+              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${settings.largeText ? 'border-blue-500 bg-blue-500 text-white' : 'border-stone-300 dark:border-stone-600'}`}>
+                {settings.largeText && <Check className="w-4 h-4" />}
+              </div>
+            </button>
+
+            <button
+              onClick={() => updateSettings({ highContrast: !settings.highContrast })}
+              className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all ${
+                settings.highContrast
+                  ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
+                  : 'border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Eye className="w-6 h-6" />
+                <span className="font-medium">Wysoki kontrast</span>
+              </div>
+              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${settings.highContrast ? 'border-blue-500 bg-blue-500 text-white' : 'border-stone-300 dark:border-stone-600'}`}>
+                {settings.highContrast && <Check className="w-4 h-4" />}
+              </div>
+            </button>
+
+            <button
+              onClick={() => updateSettings({ reduceMotion: !settings.reduceMotion })}
+              className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all ${
+                settings.reduceMotion
+                  ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
+                  : 'border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Zap className="w-6 h-6" />
+                <span className="font-medium">Redukcja animacji</span>
+              </div>
+              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${settings.reduceMotion ? 'border-blue-500 bg-blue-500 text-white' : 'border-stone-300 dark:border-stone-600'}`}>
+                {settings.reduceMotion && <Check className="w-4 h-4" />}
+              </div>
+            </button>
+          </div>
+        </div>
+
         {/* Badges Section */}
         <div className="bg-white dark:bg-stone-800 p-6 rounded-3xl shadow-sm border border-stone-200 dark:border-stone-700 mt-4 transition-colors duration-300">
           <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100 mb-6 text-center">Twoje Odznaki</h2>
@@ -76,8 +136,8 @@ export function ProfileView({ xp, streak, accuracy, unlockedBadges, isDarkMode, 
                   <div className={`p-3 rounded-full mb-3 ${isUnlocked ? badge.color : 'bg-stone-200 dark:bg-stone-700 text-stone-400 dark:text-stone-500'}`}>
                     <Icon className="w-8 h-8" />
                   </div>
-                  <h3 className="font-bold text-stone-800 dark:text-stone-200 mb-1">{badge.name}</h3>
-                  <p className="text-xs text-stone-500 dark:text-stone-400">{badge.description}</p>
+                  <h3 className="font-bold text-stone-800 dark:text-stone-200 mb-1 break-words max-w-full">{badge.name}</h3>
+                  <p className="text-xs text-stone-500 dark:text-stone-400 break-words max-w-full">{badge.description}</p>
                 </div>
               );
             })}
