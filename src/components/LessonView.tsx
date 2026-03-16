@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, LayoutGroup } from 'motion/react';
 import { lessons, Question } from '../data/lessons';
 import { Mascot, Mood } from './Mascot';
 import { Check, X, ArrowLeft, Shield } from 'lucide-react';
@@ -48,12 +48,10 @@ export function LessonView({ lessonId, onComplete, onClose }: LessonViewProps) {
 
   // Order State
   const [orderedItems, setOrderedItems] = useState<string[]>([]);
+  const [availableOrderItems, setAvailableOrderItems] = useState<string[]>([]);
 
   // True/False State
   const [selectedBoolean, setSelectedBoolean] = useState<boolean | null>(null);
-
-  // Text Input State
-  const [inputText, setInputText] = useState<string>('');
 
   // Visual Choice State
   const [selectedVisualOption, setSelectedVisualOption] = useState<string | null>(null);
@@ -80,9 +78,6 @@ export function LessonView({ lessonId, onComplete, onClose }: LessonViewProps) {
     if (currentQuestion.type === 'true_false') {
       return currentQuestion.isTrue ? "Prawda" : "Fałsz";
     }
-    if (currentQuestion.type === 'text_input') {
-      return currentQuestion.correctAnswers[0];
-    }
     if (currentQuestion.type === 'visual_choice') {
       return "Poprawny obrazek";
     }
@@ -103,7 +98,6 @@ export function LessonView({ lessonId, onComplete, onClose }: LessonViewProps) {
     setSelectedElementId(null);
     setOrderedItems([]);
     setSelectedBoolean(null);
-    setInputText('');
     setSelectedVisualOption(null);
     setMascotMood('thinking');
 
@@ -112,7 +106,8 @@ export function LessonView({ lessonId, onComplete, onClose }: LessonViewProps) {
       setShuffledRight([...currentQuestion.pairs.map(p => p.right)].sort(() => Math.random() - 0.5));
     }
     if (currentQuestion.type === 'order') {
-      setOrderedItems([...currentQuestion.items].sort(() => Math.random() - 0.5));
+      setOrderedItems([]);
+      setAvailableOrderItems([...currentQuestion.items].sort(() => Math.random() - 0.5));
     }
   }, [currentQuestion]);
 
@@ -157,9 +152,6 @@ export function LessonView({ lessonId, onComplete, onClose }: LessonViewProps) {
       correct = JSON.stringify(orderedItems) === JSON.stringify(currentQuestion.items);
     } else if (currentQuestion.type === 'true_false') {
       correct = selectedBoolean === currentQuestion.isTrue;
-    } else if (currentQuestion.type === 'text_input') {
-      const normalizedInput = inputText.trim().toLowerCase();
-      correct = currentQuestion.correctAnswers.some(ans => ans.toLowerCase() === normalizedInput);
     } else if (currentQuestion.type === 'visual_choice') {
       const option = currentQuestion.options.find(o => o.id === selectedVisualOption);
       correct = option ? option.isCorrect : false;
@@ -235,11 +227,11 @@ export function LessonView({ lessonId, onComplete, onClose }: LessonViewProps) {
 
               let buttonClass = "w-full p-4 rounded-2xl border-2 text-left text-xl font-medium transition-all active:scale-95 ";
               if (isChecking) {
-                if (isRight) buttonClass += "bg-emerald-100 dark:bg-emerald-900/30 border-emerald-500 text-emerald-700 dark:text-emerald-400";
-                else if (isWrong) buttonClass += "bg-rose-100 dark:bg-rose-900/30 border-rose-500 text-rose-700 dark:text-rose-400";
+                if (isRight) buttonClass += "bg-emerald-100 dark:bg-emerald-900 border-emerald-500 text-emerald-700 dark:text-emerald-400";
+                else if (isWrong) buttonClass += "bg-rose-100 dark:bg-rose-900 border-rose-500 text-rose-700 dark:text-rose-400";
                 else buttonClass += "bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-400 dark:text-stone-500 opacity-50";
               } else {
-                if (isSelected) buttonClass += "bg-blue-50 dark:bg-blue-900/20 border-blue-500 text-blue-700 dark:text-blue-400 ring-2 ring-blue-200 dark:ring-blue-900/50";
+                if (isSelected) buttonClass += "bg-blue-50 dark:bg-blue-900 border-blue-500 text-blue-700 dark:text-blue-400 ring-2 ring-blue-200 dark:ring-blue-900";
                 else buttonClass += "bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700 hover:border-stone-300 dark:hover:border-stone-600 border-b-4";
               }
 
@@ -263,7 +255,7 @@ export function LessonView({ lessonId, onComplete, onClose }: LessonViewProps) {
           <div className="w-full flex flex-col items-center gap-8">
             <p className="text-2xl text-center leading-relaxed text-stone-800 dark:text-stone-100">
               {currentQuestion.textBefore}
-              <span className={`inline-block min-w-[120px] border-b-4 mx-2 text-center font-bold px-4 py-1 rounded-lg ${selectedWord ? 'bg-blue-100 dark:bg-blue-900/30 border-blue-500 text-blue-700 dark:text-blue-400' : 'border-stone-300 dark:border-stone-600 text-transparent'}`}>
+              <span className={`inline-block min-w-[120px] border-b-4 mx-2 text-center font-bold px-4 py-1 rounded-lg ${selectedWord ? 'bg-blue-100 dark:bg-blue-900 border-blue-500 text-blue-700 dark:text-blue-400' : 'border-stone-300 dark:border-stone-600 text-transparent'}`}>
                 {selectedWord || '...'}
               </span>
               {currentQuestion.textAfter}
@@ -277,11 +269,11 @@ export function LessonView({ lessonId, onComplete, onClose }: LessonViewProps) {
 
                 let btnClass = "px-6 py-3 rounded-2xl border-2 text-xl font-medium transition-all active:scale-95 ";
                 if (isChecking) {
-                  if (isRight) btnClass += "bg-emerald-100 dark:bg-emerald-900/30 border-emerald-500 text-emerald-700 dark:text-emerald-400";
-                  else if (isWrong) btnClass += "bg-rose-100 dark:bg-rose-900/30 border-rose-500 text-rose-700 dark:text-rose-400";
+                  if (isRight) btnClass += "bg-emerald-100 dark:bg-emerald-900 border-emerald-500 text-emerald-700 dark:text-emerald-400";
+                  else if (isWrong) btnClass += "bg-rose-100 dark:bg-rose-900 border-rose-500 text-rose-700 dark:text-rose-400";
                   else btnClass += "bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-400 dark:text-stone-500 opacity-50";
                 } else {
-                  if (isSelected) btnClass += "bg-blue-50 dark:bg-blue-900/20 border-blue-500 text-blue-700 dark:text-blue-400 ring-2 ring-blue-200 dark:ring-blue-900/50";
+                  if (isSelected) btnClass += "bg-blue-50 dark:bg-blue-900 border-blue-500 text-blue-700 dark:text-blue-400 ring-2 ring-blue-200 dark:ring-blue-900";
                   else btnClass += "bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700 border-b-4";
                 }
 
@@ -308,8 +300,8 @@ export function LessonView({ lessonId, onComplete, onClose }: LessonViewProps) {
                   
                   let btnClass = "p-4 rounded-2xl border-2 text-center font-medium transition-all ";
                   if (isMatched) btnClass += "bg-stone-100 dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-400 dark:text-stone-500 opacity-50";
-                  else if (isError) btnClass += "bg-rose-100 dark:bg-rose-900/30 border-rose-500 text-rose-700 dark:text-rose-400";
-                  else if (isSelected) btnClass += "bg-blue-50 dark:bg-blue-900/20 border-blue-500 text-blue-700 dark:text-blue-400 ring-2 ring-blue-200 dark:ring-blue-900/50";
+                  else if (isError) btnClass += "bg-rose-100 dark:bg-rose-900 border-rose-500 text-rose-700 dark:text-rose-400";
+                  else if (isSelected) btnClass += "bg-blue-50 dark:bg-blue-900 border-blue-500 text-blue-700 dark:text-blue-400 ring-2 ring-blue-200 dark:ring-blue-900";
                   else btnClass += "bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700 border-b-4 active:scale-95";
 
                   return (
@@ -335,8 +327,8 @@ export function LessonView({ lessonId, onComplete, onClose }: LessonViewProps) {
                   
                   let btnClass = "p-4 rounded-2xl border-2 text-center font-medium transition-all ";
                   if (isMatched) btnClass += "bg-stone-100 dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-400 dark:text-stone-500 opacity-50";
-                  else if (isError) btnClass += "bg-rose-100 dark:bg-rose-900/30 border-rose-500 text-rose-700 dark:text-rose-400";
-                  else if (isSelected) btnClass += "bg-blue-50 dark:bg-blue-900/20 border-blue-500 text-blue-700 dark:text-blue-400 ring-2 ring-blue-200 dark:ring-blue-900/50";
+                  else if (isError) btnClass += "bg-rose-100 dark:bg-rose-900 border-rose-500 text-rose-700 dark:text-rose-400";
+                  else if (isSelected) btnClass += "bg-blue-50 dark:bg-blue-900 border-blue-500 text-blue-700 dark:text-blue-400 ring-2 ring-blue-200 dark:ring-blue-900";
                   else btnClass += "bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700 border-b-4 active:scale-95";
 
                   return (
@@ -373,11 +365,11 @@ export function LessonView({ lessonId, onComplete, onClose }: LessonViewProps) {
 
                 let buttonClass = "w-full p-4 rounded-2xl border-2 text-left text-xl font-medium transition-all active:scale-95 ";
                 if (isChecking) {
-                  if (isRight) buttonClass += "bg-emerald-100 dark:bg-emerald-900/30 border-emerald-500 text-emerald-700 dark:text-emerald-400";
-                  else if (isWrong) buttonClass += "bg-rose-100 dark:bg-rose-900/30 border-rose-500 text-rose-700 dark:text-rose-400";
+                  if (isRight) buttonClass += "bg-emerald-100 dark:bg-emerald-900 border-emerald-500 text-emerald-700 dark:text-emerald-400";
+                  else if (isWrong) buttonClass += "bg-rose-100 dark:bg-rose-900 border-rose-500 text-rose-700 dark:text-rose-400";
                   else buttonClass += "bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-400 dark:text-stone-500 opacity-50";
                 } else {
-                  if (isSelected) buttonClass += "bg-blue-50 dark:bg-blue-900/20 border-blue-500 text-blue-700 dark:text-blue-400 ring-2 ring-blue-200 dark:ring-blue-900/50";
+                  if (isSelected) buttonClass += "bg-blue-50 dark:bg-blue-900 border-blue-500 text-blue-700 dark:text-blue-400 ring-2 ring-blue-200 dark:ring-blue-900";
                   else buttonClass += "bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700 hover:border-stone-300 dark:hover:border-stone-600 border-b-4";
                 }
 
@@ -397,55 +389,75 @@ export function LessonView({ lessonId, onComplete, onClose }: LessonViewProps) {
         );
       case 'order':
         return (
-          <div className="w-full flex flex-col gap-6">
-            <h2 className="text-3xl font-bold text-stone-800 dark:text-stone-100 mb-4 text-center">{currentQuestion.instruction}</h2>
-            <div className="flex flex-col gap-3">
-              {orderedItems.map((item, index) => {
-                const isWrong = isChecking && !isCorrect;
-                const isRight = isChecking && isCorrect;
+          <LayoutGroup>
+            <div className="w-full flex flex-col gap-6">
+              <h2 className="text-3xl font-bold text-stone-800 dark:text-stone-100 mb-4 text-center">{currentQuestion.instruction}</h2>
+              
+              {/* Selected Items */}
+              <div className="flex flex-col gap-3 min-h-[80px] p-4 rounded-3xl bg-stone-50 dark:bg-stone-800 border-2 border-dashed border-stone-200 dark:border-stone-700">
+                {orderedItems.length === 0 && (
+                  <p className="text-center text-stone-400 dark:text-stone-500 italic py-4">Wybierz elementy poniżej w odpowiedniej kolejności</p>
+                )}
+                {orderedItems.map((item, index) => {
+                    const isWrong = isChecking && !isCorrect;
+                    const isRight = isChecking && isCorrect;
 
-                let buttonClass = "w-full p-4 rounded-2xl border-2 text-left text-xl font-medium transition-all flex items-center gap-4 ";
-                if (isChecking) {
-                  if (isRight) buttonClass += "bg-emerald-100 dark:bg-emerald-900/30 border-emerald-500 text-emerald-700 dark:text-emerald-400";
-                  else if (isWrong) buttonClass += "bg-rose-100 dark:bg-rose-900/30 border-rose-500 text-rose-700 dark:text-rose-400";
-                } else {
-                  buttonClass += "bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700 hover:border-stone-300 dark:hover:border-stone-600 border-b-4 cursor-pointer active:scale-95";
-                }
+                    let buttonClass = "w-full p-4 rounded-2xl border-2 text-left text-xl font-medium flex items-center gap-4 ";
+                    if (isChecking) {
+                      if (isRight) buttonClass += "bg-emerald-100 dark:bg-emerald-900 border-emerald-500 text-emerald-700 dark:text-emerald-400";
+                      else if (isWrong) buttonClass += "bg-rose-100 dark:bg-rose-900 border-rose-500 text-rose-700 dark:text-rose-400";
+                    } else {
+                      buttonClass += "bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700 hover:border-stone-300 dark:hover:border-stone-600 border-b-4 cursor-pointer active:scale-95";
+                    }
 
-                return (
-                  <motion.div
-                    key={item}
-                    layout
-                    onClick={() => {
-                      if (isChecking) return;
-                      // Move item down, or to top if at bottom
-                      const newItems = [...orderedItems];
-                      if (index < newItems.length - 1) {
-                        const temp = newItems[index];
-                        newItems[index] = newItems[index + 1];
-                        newItems[index + 1] = temp;
-                      } else {
-                        const temp = newItems.pop()!;
-                        newItems.unshift(temp);
-                      }
-                      setOrderedItems(newItems);
-                    }}
-                    className={buttonClass}
-                  >
-                    <div className="w-8 h-8 rounded-full bg-stone-200 dark:bg-stone-700 flex items-center justify-center font-bold text-stone-600 dark:text-stone-300 shrink-0">
-                      {index + 1}
-                    </div>
-                    <span>{item}</span>
-                  </motion.div>
-                );
-              })}
+                    return (
+                      <motion.div
+                        key={item}
+                        layoutId={`order-item-${item}`}
+                        layout
+                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                        onClick={() => {
+                          if (isChecking) return;
+                          setOrderedItems(prev => prev.filter(i => i !== item));
+                          setAvailableOrderItems(prev => [...prev, item]);
+                        }}
+                        className={buttonClass}
+                      >
+                        <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold shrink-0">
+                          {index + 1}
+                        </div>
+                        <span>{item}</span>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+
+              {/* Available Items */}
+              {availableOrderItems.length > 0 && (
+                <div className="flex flex-col gap-3 mt-2">
+                  {availableOrderItems.map((item) => (
+                      <motion.div
+                        key={item}
+                        layoutId={`order-item-${item}`}
+                        layout
+                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                        onClick={() => {
+                          if (isChecking) return;
+                          setAvailableOrderItems(prev => prev.filter(i => i !== item));
+                          setOrderedItems(prev => [...prev, item]);
+                        }}
+                        className="w-full p-4 rounded-2xl border-2 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700 hover:border-stone-300 dark:hover:border-stone-600 border-b-4 cursor-pointer active:scale-95 text-left text-xl font-medium flex items-center gap-4"
+                      >
+                        <div className="w-8 h-8 rounded-full bg-stone-200 dark:bg-stone-700 flex items-center justify-center font-bold text-stone-500 dark:text-stone-400 shrink-0">
+                          +
+                        </div>
+                        <span>{item}</span>
+                      </motion.div>
+                    ))}
+                </div>
+              )}
             </div>
-            {!isChecking && (
-              <p className="text-center text-stone-500 dark:text-stone-400 text-sm mt-2">
-                Kliknij na element, aby przesunąć go w dół.
-              </p>
-            )}
-          </div>
+          </LayoutGroup>
         );
       case 'true_false':
         return (
@@ -464,11 +476,11 @@ export function LessonView({ lessonId, onComplete, onClose }: LessonViewProps) {
 
                 let buttonClass = "flex-1 p-6 rounded-2xl border-2 text-center text-2xl font-bold transition-all active:scale-95 ";
                 if (isChecking) {
-                  if (isRight) buttonClass += "bg-emerald-100 dark:bg-emerald-900/30 border-emerald-500 text-emerald-700 dark:text-emerald-400";
-                  else if (isWrong) buttonClass += "bg-rose-100 dark:bg-rose-900/30 border-rose-500 text-rose-700 dark:text-rose-400";
+                  if (isRight) buttonClass += "bg-emerald-100 dark:bg-emerald-900 border-emerald-500 text-emerald-700 dark:text-emerald-400";
+                  else if (isWrong) buttonClass += "bg-rose-100 dark:bg-rose-900 border-rose-500 text-rose-700 dark:text-rose-400";
                   else buttonClass += "bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-400 dark:text-stone-500 opacity-50";
                 } else {
-                  if (isSelected) buttonClass += "bg-blue-50 dark:bg-blue-900/20 border-blue-500 text-blue-700 dark:text-blue-400 ring-2 ring-blue-200 dark:ring-blue-900/50";
+                  if (isSelected) buttonClass += "bg-blue-50 dark:bg-blue-900 border-blue-500 text-blue-700 dark:text-blue-400 ring-2 ring-blue-200 dark:ring-blue-900";
                   else buttonClass += "bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700 border-b-4";
                 }
 
@@ -486,33 +498,6 @@ export function LessonView({ lessonId, onComplete, onClose }: LessonViewProps) {
             </div>
           </div>
         );
-      case 'text_input':
-        return (
-          <div className="w-full flex flex-col gap-6 items-center">
-            <h2 className="text-3xl font-bold text-stone-800 dark:text-stone-100 mb-4 text-center">{currentQuestion.question}</h2>
-            <div className="w-full max-w-sm">
-              <input
-                type="text"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                disabled={isChecking}
-                placeholder="Wpisz odpowiedź..."
-                className={`w-full p-4 rounded-2xl border-2 text-xl text-center font-medium outline-none transition-all ${
-                  isChecking
-                    ? isCorrect
-                      ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-500 text-emerald-700 dark:text-emerald-400'
-                      : 'bg-rose-50 dark:bg-rose-900/20 border-rose-500 text-rose-700 dark:text-rose-400'
-                    : 'bg-white dark:bg-stone-800 border-stone-300 dark:border-stone-600 text-stone-800 dark:text-stone-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900/50'
-                }`}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && inputText.trim() && !isChecking) {
-                    handleCheck();
-                  }
-                }}
-              />
-            </div>
-          </div>
-        );
       case 'visual_choice':
         return (
           <div className="w-full flex flex-col gap-6">
@@ -525,11 +510,11 @@ export function LessonView({ lessonId, onComplete, onClose }: LessonViewProps) {
 
                 let buttonClass = "w-full p-4 rounded-2xl border-4 transition-all active:scale-95 ";
                 if (isChecking) {
-                  if (isRight) buttonClass += "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-500";
-                  else if (isWrong) buttonClass += "bg-rose-50 dark:bg-rose-900/20 border-rose-500";
+                  if (isRight) buttonClass += "bg-emerald-50 dark:bg-emerald-900 border-emerald-500";
+                  else if (isWrong) buttonClass += "bg-rose-50 dark:bg-rose-900 border-rose-500";
                   else buttonClass += "bg-stone-50 dark:bg-stone-900 border-stone-200 dark:border-stone-700 opacity-50";
                 } else {
-                  if (isSelected) buttonClass += "bg-blue-50 dark:bg-blue-900/20 border-blue-500 ring-4 ring-blue-200 dark:ring-blue-900/50";
+                  if (isSelected) buttonClass += "bg-blue-50 dark:bg-blue-900 border-blue-500 ring-4 ring-blue-200 dark:ring-blue-900";
                   else buttonClass += "bg-stone-50 dark:bg-stone-900 border-stone-200 dark:border-stone-700 hover:border-stone-300 dark:hover:border-stone-600";
                 }
 
@@ -573,21 +558,21 @@ export function LessonView({ lessonId, onComplete, onClose }: LessonViewProps) {
                 {currentQuestion.uiType === 'email' && (
                   <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden shadow-sm">
                     {/* Email Header */}
-                    <div className="bg-stone-50 dark:bg-stone-800/50 p-4 border-b border-stone-200 dark:border-stone-700">
+                    <div className="bg-stone-50 dark:bg-stone-800 p-4 border-b border-stone-200 dark:border-stone-700">
                       <button 
                         onClick={() => !isChecking && setSelectedElementId('subject')}
-                        className={`text-left w-full p-2 -ml-2 rounded-lg transition-colors ${selectedElementId === 'subject' ? 'bg-blue-100 dark:bg-blue-900/40 ring-2 ring-blue-500' : 'hover:bg-stone-200/50 dark:hover:bg-stone-700/50'}`}
+                        className={`text-left w-full p-2 -ml-2 rounded-lg transition-colors ${selectedElementId === 'subject' ? 'bg-blue-100 dark:bg-blue-900 ring-2 ring-blue-500' : 'hover:bg-stone-200 dark:hover:bg-stone-700'}`}
                       >
                         <h3 className="text-xl font-bold text-stone-800 dark:text-stone-100">{currentQuestion.uiData.subject}</h3>
                       </button>
                       
                       <div className="flex items-center gap-3 mt-4">
-                        <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-lg">
+                        <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-lg">
                           {currentQuestion.uiData.sender.charAt(0)}
                         </div>
                         <button 
                           onClick={() => !isChecking && setSelectedElementId('sender')}
-                          className={`text-left flex-1 p-2 -ml-2 rounded-lg transition-colors ${selectedElementId === 'sender' ? 'bg-blue-100 dark:bg-blue-900/40 ring-2 ring-blue-500' : 'hover:bg-stone-200/50 dark:hover:bg-stone-700/50'}`}
+                          className={`text-left flex-1 p-2 -ml-2 rounded-lg transition-colors ${selectedElementId === 'sender' ? 'bg-blue-100 dark:bg-blue-900 ring-2 ring-blue-500' : 'hover:bg-stone-200 dark:hover:bg-stone-700'}`}
                         >
                           <div className="flex flex-col sm:flex-row sm:items-baseline gap-1">
                             <span className="font-bold text-stone-800 dark:text-stone-200">
@@ -608,7 +593,7 @@ export function LessonView({ lessonId, onComplete, onClose }: LessonViewProps) {
                     <div className="p-6">
                       <button 
                         onClick={() => !isChecking && setSelectedElementId('body')}
-                        className={`text-left w-full p-4 -m-4 rounded-lg transition-colors text-stone-700 dark:text-stone-300 whitespace-pre-wrap ${selectedElementId === 'body' ? 'bg-blue-100 dark:bg-blue-900/40 ring-2 ring-blue-500' : 'hover:bg-stone-50 dark:hover:bg-stone-800/50'}`}
+                        className={`text-left w-full p-4 -m-4 rounded-lg transition-colors text-stone-700 dark:text-stone-300 whitespace-pre-wrap ${selectedElementId === 'body' ? 'bg-blue-100 dark:bg-blue-900 ring-2 ring-blue-500' : 'hover:bg-stone-50 dark:hover:bg-stone-800'}`}
                       >
                         {currentQuestion.uiData.body}
                       </button>
@@ -631,7 +616,7 @@ export function LessonView({ lessonId, onComplete, onClose }: LessonViewProps) {
                   <div className="flex flex-col gap-4">
                     <button 
                       onClick={() => !isChecking && setSelectedElementId('sender')}
-                      className={`text-center py-2 border-b border-stone-200 dark:border-stone-700 transition-colors rounded-t-lg ${selectedElementId === 'sender' ? 'bg-blue-100 dark:bg-blue-900/30 ring-2 ring-blue-500' : 'hover:bg-stone-50 dark:hover:bg-stone-700/50'}`}
+                      className={`text-center py-2 border-b border-stone-200 dark:border-stone-700 transition-colors rounded-t-lg ${selectedElementId === 'sender' ? 'bg-blue-100 dark:bg-blue-900 ring-2 ring-blue-500' : 'hover:bg-stone-50 dark:hover:bg-stone-700'}`}
                     >
                       <span className="text-sm text-stone-500 dark:text-stone-400">Nadawca</span>
                       <div className="font-medium text-stone-800 dark:text-stone-200">{currentQuestion.uiData.sender}</div>
@@ -647,7 +632,7 @@ export function LessonView({ lessonId, onComplete, onClose }: LessonViewProps) {
                         {currentQuestion.uiData.linkText && (
                           <button 
                             onClick={() => !isChecking && setSelectedElementId('link')}
-                            className={`mt-2 text-blue-600 dark:text-blue-400 underline break-all p-1 rounded transition-colors ${selectedElementId === 'link' ? 'bg-blue-200 dark:bg-blue-800 ring-2 ring-blue-500' : 'hover:bg-blue-50 dark:hover:bg-blue-900/30'}`}
+                            className={`mt-2 text-blue-600 dark:text-blue-400 underline break-all p-1 rounded transition-colors ${selectedElementId === 'link' ? 'bg-blue-200 dark:bg-blue-800 ring-2 ring-blue-500' : 'hover:bg-blue-50 dark:hover:bg-blue-900'}`}
                           >
                             {currentQuestion.uiData.linkText}
                           </button>
@@ -661,20 +646,20 @@ export function LessonView({ lessonId, onComplete, onClose }: LessonViewProps) {
                   <div className="flex flex-col items-center text-center gap-4 py-8">
                     <button 
                       onClick={() => !isChecking && setSelectedElementId('warningTitle')}
-                      className={`text-2xl font-bold text-rose-600 dark:text-rose-400 p-2 rounded-lg transition-colors ${selectedElementId === 'warningTitle' ? 'bg-blue-100 dark:bg-blue-900/30 ring-2 ring-blue-500' : 'hover:bg-rose-50 dark:hover:bg-rose-900/20'}`}
+                      className={`text-2xl font-bold text-rose-600 dark:text-rose-400 p-2 rounded-lg transition-colors ${selectedElementId === 'warningTitle' ? 'bg-blue-100 dark:bg-blue-900 ring-2 ring-blue-500' : 'hover:bg-rose-50 dark:hover:bg-rose-900'}`}
                     >
                       {currentQuestion.uiData.warningTitle}
                     </button>
                     <button 
                       onClick={() => !isChecking && setSelectedElementId('warningText')}
-                      className={`text-stone-700 dark:text-stone-300 p-2 rounded-lg transition-colors ${selectedElementId === 'warningText' ? 'bg-blue-100 dark:bg-blue-900/30 ring-2 ring-blue-500' : 'hover:bg-stone-50 dark:hover:bg-stone-700/50'}`}
+                      className={`text-stone-700 dark:text-stone-300 p-2 rounded-lg transition-colors ${selectedElementId === 'warningText' ? 'bg-blue-100 dark:bg-blue-900 ring-2 ring-blue-500' : 'hover:bg-stone-50 dark:hover:bg-stone-700'}`}
                     >
                       {currentQuestion.uiData.warningText}
                     </button>
                     <div className="flex gap-4 mt-4">
                       <button 
                         onClick={() => !isChecking && setSelectedElementId('buttonDecline')}
-                        className={`px-6 py-2 rounded-lg font-medium text-stone-600 dark:text-stone-300 border border-stone-300 dark:border-stone-600 transition-colors ${selectedElementId === 'buttonDecline' ? 'bg-blue-100 dark:bg-blue-900/30 ring-2 ring-blue-500' : 'hover:bg-stone-100 dark:hover:bg-stone-700'}`}
+                        className={`px-6 py-2 rounded-lg font-medium text-stone-600 dark:text-stone-300 border border-stone-300 dark:border-stone-600 transition-colors ${selectedElementId === 'buttonDecline' ? 'bg-blue-100 dark:bg-blue-900 ring-2 ring-blue-500' : 'hover:bg-stone-100 dark:hover:bg-stone-700'}`}
                       >
                         {currentQuestion.uiData.buttonDecline || 'Anuluj'}
                       </button>
@@ -709,7 +694,7 @@ export function LessonView({ lessonId, onComplete, onClose }: LessonViewProps) {
     const isAllMatched = matchedPairs.length === currentQuestion.pairs.length;
     if (isAllMatched) {
       showBottomBar = true;
-      bottomBarBg = 'bg-emerald-100 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-800';
+      bottomBarBg = 'bg-emerald-100 dark:bg-emerald-900 border-emerald-200 dark:border-emerald-800';
       bottomBarContent = (
         <div className="flex flex-col gap-4">
           <div className="flex items-start gap-4">
@@ -733,15 +718,14 @@ export function LessonView({ lessonId, onComplete, onClose }: LessonViewProps) {
       (currentQuestion.type === 'fill_blank' && selectedWord !== null) ||
       (currentQuestion.type === 'scenario' && selectedScenarioOption !== null) ||
       (currentQuestion.type === 'click_element' && selectedElementId !== null) ||
-      (currentQuestion.type === 'order') ||
+      (currentQuestion.type === 'order' && orderedItems.length === currentQuestion.items.length) ||
       (currentQuestion.type === 'true_false' && selectedBoolean !== null) ||
-      (currentQuestion.type === 'text_input' && inputText.trim() !== '') ||
       (currentQuestion.type === 'visual_choice' && selectedVisualOption !== null);
       
     if (hasSelection) {
       showBottomBar = true;
       if (isChecking) {
-        bottomBarBg = isCorrect ? 'bg-emerald-100 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-800' : 'bg-rose-100 dark:bg-rose-900/30 border-rose-200 dark:border-rose-800';
+        bottomBarBg = isCorrect ? 'bg-emerald-100 dark:bg-emerald-900 border-emerald-200 dark:border-emerald-800' : 'bg-rose-100 dark:bg-rose-900 border-rose-200 dark:border-rose-800';
       }
       bottomBarContent = (
         <div className="flex flex-col gap-4">

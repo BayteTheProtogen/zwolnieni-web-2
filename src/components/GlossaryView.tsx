@@ -61,7 +61,7 @@ export function GlossaryView({ completedLessons }: { completedLessons: string[] 
               className={`p-5 rounded-2xl shadow-sm border transition-all ${
                 isUnlocked 
                   ? 'bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700' 
-                  : 'bg-stone-200/50 dark:bg-stone-800/50 border-stone-300/50 dark:border-stone-700/50'
+                  : 'bg-stone-200 dark:bg-stone-800 border-stone-300 dark:border-stone-700'
               }`}
             >
               <div className="flex items-start justify-between gap-4">
@@ -69,7 +69,7 @@ export function GlossaryView({ completedLessons }: { completedLessons: string[] 
                   {isUnlocked ? item.term : '???'}
                 </h2>
                 {!isUnlocked && (
-                  <div className="p-2 bg-stone-300/50 dark:bg-stone-700/50 rounded-full text-stone-500 dark:text-stone-400">
+                  <div className="p-2 bg-stone-300 dark:bg-stone-700 rounded-full text-stone-500 dark:text-stone-400">
                     <Lock className="w-5 h-5" />
                   </div>
                 )}

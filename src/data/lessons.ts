@@ -86,14 +86,6 @@ export type QuestionTrueFalse = {
   explanation: string;
 };
 
-export type QuestionTextInput = {
-  id: string;
-  type: 'text_input';
-  question: string;
-  correctAnswers: string[]; // Acceptable answers (case-insensitive)
-  explanation: string;
-};
-
 export type QuestionVisualChoice = {
   id: string;
   type: 'visual_choice';
@@ -107,7 +99,7 @@ export type QuestionVisualChoice = {
   explanation: string;
 };
 
-export type Question = QuestionInfo | QuestionMultipleChoice | QuestionFillBlank | QuestionMatch | QuestionScenario | QuestionClickElement | QuestionOrder | QuestionTrueFalse | QuestionTextInput | QuestionVisualChoice;
+export type Question = QuestionInfo | QuestionMultipleChoice | QuestionFillBlank | QuestionMatch | QuestionScenario | QuestionClickElement | QuestionOrder | QuestionTrueFalse | QuestionVisualChoice;
 
 export type Lesson = {
   id: string;
@@ -252,13 +244,6 @@ export const lessons: Lesson[] = [
         statement: 'Aplikacje na telefon można bezpiecznie pobierać z dowolnej strony internetowej, którą znajdziemy w Google.',
         isTrue: false,
         explanation: 'Aplikacje należy pobierać TYLKO z oficjalnych sklepów: Google Play (dla Androida) lub App Store (dla iPhone). Pobieranie ich z innych stron to ogromne ryzyko zainstalowania wirusa!'
-      },
-      {
-        id: 'app1_text',
-        type: 'text_input',
-        question: 'Jak nazywa się oficjalny sklep z aplikacjami na telefonach z systemem Android? (Wpisz dwa słowa)',
-        correctAnswers: ['google play', 'sklep play', 'play store'],
-        explanation: 'Google Play (lub Sklep Play) to jedyne bezpieczne miejsce do pobierania aplikacji na telefony z Androidem.'
       }
     ]
   },
@@ -443,7 +428,7 @@ export const lessons: Lesson[] = [
       {
         id: 'h5_order',
         type: 'order',
-        instruction: 'Ułóż w odpowiedniej kolejności kroki odzyskiwania zapomnianego hasła:',
+        instruction: 'Wybierz w odpowiedniej kolejności kroki odzyskiwania zapomnianego hasła:',
         items: [
           'Klikam w link "Zapomniałem hasła" na stronie logowania',
           'Wpisuję swój adres e-mail (lub numer telefonu) powiązany z kontem',
@@ -453,13 +438,6 @@ export const lessons: Lesson[] = [
           'Loguję się na konto używając nowego hasła'
         ],
         explanation: 'Proces odzyskiwania hasła zawsze opiera się na potwierdzeniu Twojej tożsamości poprzez e-mail lub SMS, do którego tylko Ty masz dostęp.'
-      },
-      {
-        id: 'h5_text',
-        type: 'text_input',
-        question: 'Jak nazywa się funkcja na stronie logowania, której używamy, gdy nie pamiętamy swojego hasła? (Wpisz dwa słowa)',
-        correctAnswers: ['zapomniałem hasła', 'zapomnialem hasla', 'odzyskiwanie hasła', 'odzyskiwanie hasla', 'reset hasła', 'reset hasla'],
-        explanation: 'Szukaj linków takich jak "Zapomniałem hasła" lub "Odzyskaj dostęp" pod formularzem logowania.'
       }
     ]
   },
@@ -707,7 +685,7 @@ export const lessons: Lesson[] = [
       {
         id: 's6_order',
         type: 'order',
-        instruction: 'Ułóż w odpowiedniej kolejności kroki bezpiecznego pobierania programu:',
+        instruction: 'Wybierz w odpowiedniej kolejności kroki bezpiecznego pobierania programu:',
         items: [
           'Szukam oficjalnej strony twórcy programu (np. wpisując jego nazwę w Google)',
           'Sprawdzam, czy adres strony jest poprawny i ma kłódkę (HTTPS)',
@@ -971,7 +949,7 @@ export const lessons: Lesson[] = [
       {
         id: 'z4_order',
         type: 'order',
-        instruction: 'Ułóż w odpowiedniej kolejności bezpieczny proces sprzedaży na portalu ogłoszeniowym:',
+        instruction: 'Wybierz w odpowiedniej kolejności bezpieczny proces sprzedaży na portalu ogłoszeniowym:',
         items: [
           'Wystawiam przedmiot z opcją "Kup z przesyłką" na portalu',
           'Kupujący klika "Kup" i płaci bezpośrednio przez portal',
@@ -1110,7 +1088,7 @@ export const lessons: Lesson[] = [
       {
         id: 'o3_order',
         type: 'order',
-        instruction: 'Ułóż w odpowiedniej kolejności kroki bezpiecznego przygotowania telefonu do oddania/sprzedaży:',
+        instruction: 'Wybierz w odpowiedniej kolejności kroki bezpiecznego przygotowania telefonu do oddania/sprzedaży:',
         items: [
           'Wykonanie kopii zapasowej (backupu) wszystkich ważnych danych (zdjęć, kontaktów)',
           'Wylogowanie się ze wszystkich kont (Google, Apple ID, aplikacje bankowe)',
@@ -1292,13 +1270,6 @@ export const lessons: Lesson[] = [
           { left: 'Zwykła reklama butów w znanym sklepie', right: 'Normalna oferta handlowa' }
         ],
         explanation: 'Bądź sceptyczny wobec reklam obiecujących szybki zysk lub cudowne uzdrowienie.'
-      },
-      {
-        id: 'zo5_text',
-        type: 'text_input',
-        question: 'Jak nazywamy oszustwo polegające na wyłudzaniu pieniędzy pod pretekstem super opłacalnej, szybkiej inwestycji (często reklamowanej przez fałszywe wizerunki celebrytów)? (Wpisz dwa słowa)',
-        correctAnswers: ['oszustwo inwestycyjne', 'oszustwa inwestycyjne'],
-        explanation: 'Oszustwa inwestycyjne to plaga internetu. Pamiętaj: nie ma magicznych sposobów na szybkie i pewne zyski bez ryzyka.'
       }
     ]
   },
@@ -1325,7 +1296,7 @@ export const lessons: Lesson[] = [
       {
         id: 'zo6_order',
         type: 'order',
-        instruction: 'Ułóż w odpowiedniej kolejności kroki bezpiecznej płatności BLIKiem:',
+        instruction: 'Wybierz w odpowiedniej kolejności kroki bezpiecznej płatności BLIKiem:',
         items: [
           'Wybieram BLIK jako metodę płatności w sklepie',
           'Otwieram aplikację mojego banku na telefonie',
@@ -1549,7 +1520,7 @@ export const lessons: Lesson[] = [
       {
         id: 'sm6_order',
         type: 'order',
-        instruction: 'Co powinieneś zrobić, gdy znajomy na Messengerze prosi Cię o pilną pożyczkę BLIKiem?',
+        instruction: 'Wybierz w odpowiedniej kolejności kroki, które powinieneś podjąć, gdy znajomy na Messengerze prosi Cię o pilną pożyczkę BLIKiem:',
         items: [
           'Nie wysyłam od razu żadnego kodu ani pieniędzy',
           'Dzwonię do tego znajomego na jego numer telefonu (nie przez Messengera)',
@@ -1558,13 +1529,6 @@ export const lessons: Lesson[] = [
           'Ostrzegam innych wspólnych znajomych o włamaniu na jego konto'
         ],
         explanation: 'Najważniejsze to zachować spokój i zweryfikować prośbę innym kanałem komunikacji (najlepiej dzwoniąc na zwykły numer telefonu).'
-      },
-      {
-        id: 'sm6_text',
-        type: 'text_input',
-        question: 'Jak nazywa się popularny w Polsce system płatności mobilnych, o który często proszą oszuści podszywający się pod znajomych? (Wpisz 4 litery)',
-        correctAnswers: ['blik', 'BLIK'],
-        explanation: 'Oszuści uwielbiają wyłudzać kody BLIK, ponieważ pozwalają one na szybkie i anonimowe wypłacenie gotówki z bankomatu.'
       }
     ]
   },
@@ -1627,13 +1591,6 @@ export const lessons: Lesson[] = [
         options: ['oficjalnych', 'nieznanych', 'darmowych'],
         correctAnswer: 'oficjalnych',
         explanation: 'Oficjalne sklepy sprawdzają aplikacje przed ich udostępnieniem, co znacznie zmniejsza ryzyko pobrania wirusa.'
-      },
-      {
-        id: 'ur2_text',
-        type: 'text_input',
-        question: 'Jak nazywa się oficjalny sklep z aplikacjami dla telefonów iPhone (od firmy Apple)? (Wpisz dwa słowa)',
-        correctAnswers: ['app store', 'appstore'],
-        explanation: 'App Store to jedyne bezpieczne miejsce do pobierania aplikacji na iPhone.'
       }
     ]
   },
@@ -1759,7 +1716,7 @@ export const lessons: Lesson[] = [
       {
         id: 'ur6_order',
         type: 'order',
-        instruction: 'Ułóż w odpowiedniej kolejności czynności, które należy wykonać po zakupie nowego telefonu (od najważniejszej/pierwszej):',
+        instruction: 'Wybierz w odpowiedniej kolejności czynności, które należy wykonać po zakupie nowego telefonu (od najważniejszej/pierwszej):',
         items: [
           'Ustawienie trudnego do odgadnięcia kodu PIN lub wzoru blokady ekranu',
           'Dodanie odcisku palca lub skanu twarzy (biometria)',
@@ -1966,13 +1923,6 @@ export const lessons: Lesson[] = [
         statement: 'Sztuczna inteligencja (AI) potrafi generować obrazy i filmy, które wyglądają niezwykle realistycznie, ale w rzeczywistości nigdy się nie wydarzyły.',
         isTrue: true,
         explanation: 'To prawda! Technologia ta nazywa się Deepfake i jest często używana do tworzenia fałszywych wiadomości lub oszustw.'
-      },
-      {
-        id: 'ai6_text',
-        type: 'text_input',
-        question: 'Jak nazywa się zjawisko, w którym algorytmy pokazują Ci tylko informacje zgodne z Twoimi poglądami, ukrywając inne opinie? (Wpisz dwa słowa)',
-        correctAnswers: ['bańka informacyjna', 'banka informacyjna', 'bańką informacyjną', 'banka informacyjna'],
-        explanation: 'Bańka informacyjna to niebezpieczne zjawisko, które zamyka nas na inne punkty widzenia i sprawia, że jesteśmy bardziej podatni na manipulację.'
       }
     ]
   }

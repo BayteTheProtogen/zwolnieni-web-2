@@ -36,25 +36,25 @@ export function LessonCompleteView({ xpEarned, newStreak, passed, onContinue }: 
 
       <div className="flex gap-6 mb-12">
         <motion.div 
-          className="bg-white dark:bg-white p-6 rounded-3xl shadow-lg border-2 border-orange-200 dark:border-orange-200 flex flex-col items-center min-w-[140px] transition-colors duration-300"
+          className="bg-white dark:bg-stone-900 p-6 rounded-3xl shadow-lg border-2 border-orange-200 dark:border-orange-900 flex flex-col items-center min-w-[140px] transition-colors duration-300"
           initial={{ x: -50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.5, type: 'spring' }}
         >
           <Flame className="w-12 h-12 fill-orange-500 text-orange-500 mb-2" />
-          <span className="text-3xl font-bold text-orange-600">{newStreak}</span>
-          <span className="text-orange-800 font-medium">Dni z rzędu</span>
+          <span className="text-3xl font-bold text-orange-600 dark:text-orange-400">{newStreak}</span>
+          <span className="text-orange-800 dark:text-orange-300 font-medium">Dni z rzędu</span>
         </motion.div>
 
         <motion.div 
-          className="bg-white dark:bg-white p-6 rounded-3xl shadow-lg border-2 border-blue-200 dark:border-blue-200 flex flex-col items-center min-w-[140px] transition-colors duration-300"
+          className="bg-white dark:bg-stone-900 p-6 rounded-3xl shadow-lg border-2 border-blue-200 dark:border-blue-900 flex flex-col items-center min-w-[140px] transition-colors duration-300"
           initial={{ x: 50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.7, type: 'spring' }}
         >
           <Star className="w-12 h-12 fill-blue-500 text-blue-500 mb-2" />
-          <span className="text-3xl font-bold text-blue-600">+{xpEarned}</span>
-          <span className="text-blue-800 font-medium">Zdobyte gwiazdki</span>
+          <span className="text-3xl font-bold text-blue-600 dark:text-blue-400">+{xpEarned}</span>
+          <span className="text-blue-800 dark:text-blue-300 font-medium">Zdobyte gwiazdki</span>
         </motion.div>
       </div>
 

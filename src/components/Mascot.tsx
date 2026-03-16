@@ -18,7 +18,7 @@ const faces: Record<Mood, string> = {
   celebrating: '\\(^o^)/',
 };
 
-export function Mascot({ mood, className = '', layoutId = 'mascot' }: MascotProps) {
+export function Mascot({ mood, className = '', layoutId }: MascotProps) {
   const { settings } = useAccessibility();
   const [isBlinking, setIsBlinking] = useState(false);
 

@@ -151,7 +151,7 @@ export function HomeView({ xp, streak, completedLessons, onStartLesson, justComp
                     isCompleted
                       ? 'bg-emerald-500 border-emerald-700 text-white'
                       : isNext
-                      ? `bg-blue-500 border-blue-700 text-white ring-4 ring-blue-300 dark:ring-blue-900/50 ring-offset-2 dark:ring-offset-stone-900 ${settings.reduceMotion ? '' : 'animate-pulse'}`
+                      ? `bg-blue-500 border-blue-700 text-white ring-4 ring-blue-300 dark:ring-blue-900 ring-offset-2 dark:ring-offset-stone-900 ${settings.reduceMotion ? '' : 'animate-pulse'}`
                       : 'bg-stone-300 dark:bg-stone-700 border-stone-400 dark:border-stone-800 text-stone-500 dark:text-stone-400 cursor-not-allowed'
                   }`}
                 >
